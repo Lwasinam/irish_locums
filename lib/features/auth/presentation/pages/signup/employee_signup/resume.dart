@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:irish_locums/app/shared/app_bar.dart';
 import 'package:irish_locums/app/shared/busy_button.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
+import 'package:irish_locums/features/auth/data/authRepository.dart';
 import 'package:irish_locums/features/auth/presentation/widgets/upload_widget.dart';
+import 'package:provider/provider.dart';
 
 class Resume extends StatefulWidget {
   const Resume({Key? key}) : super(key: key);
@@ -23,6 +26,20 @@ class _ResumeState extends State<Resume> {
     'PHARMACY TECHNICIAN',
     'SOCIAL CARE WORKER'
   ];
+  String? selectedCategory;
+  storeDataAndNavigate(Map data) {
+    setState(() {});
+    if (selectedCategory != null) {
+      Provider.of<AuthRepository>(context, listen: false)
+          .userSignupData
+          .addAll(data);
+
+      Navigator.pushReplacementNamed(
+        context,
+        RouteName.signupEmployeeResumeSecond,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +90,10 @@ class _ResumeState extends State<Resume> {
                             decoration:
                                 const InputDecoration(border: InputBorder.none),
                             dropdownColor: AppColors.backgroundLightBlue,
-                            onChanged: (val) {},
+                            onChanged: (String? val) {
+                              setState(() {});
+                              selectedCategory = val!.toLowerCase();
+                            },
                             items: _category.map((e) {
                               return DropdownMenuItem(
                                 value: e,
@@ -83,6 +103,13 @@ class _ResumeState extends State<Resume> {
                           ),
                         ),
                       ),
+                      gapTiny,
+                      selectedCategory == null
+                          ? const Text(
+                              'Empty field',
+                              style: TextStyle(color: AppColors.red),
+                            )
+                          : const SizedBox(),
                       gapSmall,
                       gapMedium,
                       TextBody(
@@ -128,10 +155,8 @@ class _ResumeState extends State<Resume> {
                           buttonColor: AppColors.yellow,
                           textColor: AppColors.black,
                           onTap: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              RouteName.signupEmployeeResumeSecond,
-                            );
+                            storeDataAndNavigate(
+                                {'occupation': selectedCategory, 'resume': ''});
                           },
                         ),
                         gapMedium,

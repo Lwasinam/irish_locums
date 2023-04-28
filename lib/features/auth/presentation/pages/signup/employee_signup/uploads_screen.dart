@@ -1,11 +1,17 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:irish_locums/app/shared/app_bar.dart';
 import 'package:irish_locums/app/shared/busy_button.dart';
+import 'package:irish_locums/app/shared/shared_pref_helper.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
+import 'package:irish_locums/features/auth/data/authRepository.dart';
 import 'package:irish_locums/features/auth/presentation/widgets/upload_widget.dart';
+import 'package:irish_locums/features/home/home.dart';
+import 'package:provider/provider.dart';
 
 class EmployeeUploads extends StatefulWidget {
   const EmployeeUploads({Key? key}) : super(key: key);
@@ -16,6 +22,7 @@ class EmployeeUploads extends StatefulWidget {
 
 class _EmployeeUploadsState extends State<EmployeeUploads> {
   bool isChecked = false;
+  bool isLoading = false;
 
   Color getColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
@@ -27,6 +34,52 @@ class _EmployeeUploadsState extends State<EmployeeUploads> {
       return Colors.blue;
     }
     return AppColors.black;
+  }
+
+  storeDataAndNavigate(Map data) async {
+    setState(() {});
+
+    if (isChecked != false) {
+      Provider.of<AuthRepository>(context, listen: false)
+          .userSignupData
+          .addAll(data);
+
+      // log(Provider.of<AuthRepository>(context, listen: false)
+      //     .userSignupData
+      //     .toString());
+      setState(() {
+        isLoading = true;
+      });
+      Map? response =
+          await Provider.of<AuthRepository>(context, listen: false).signup();
+
+      if (response != null) {
+        log(response.toString());
+        setState(() {
+          isLoading = false;
+        });
+        if (response['status'] == false) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(response['msg']),
+          ));
+        } else if (response['status'] == true) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(response['msg']),
+          ));
+          Navigator.pushReplacementNamed(
+            context,
+            RouteName.appNavPage,
+          );
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('error occured'),
+        ));
+      }
+    }
   }
 
   @override
@@ -124,17 +177,32 @@ class _EmployeeUploadsState extends State<EmployeeUploads> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        BusyButton(
-                          title: 'Create Account',
-                          buttonColor: AppColors.secondaryColor,
-                          textColor: AppColors.white,
-                          onTap: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              RouteName.appNavPage,
-                            );
-                          },
-                        ),
+                        isLoading
+                            ? SizedBox(
+                                height: 48.3,
+                                width: 48.3,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 4,
+                                    color: AppColors.primaryColor,
+                                    backgroundColor:
+                                        AppColors.primaryColor.withOpacity(0.5),
+                                  ),
+                                ),
+                              )
+                            : BusyButton(
+                                title: 'Create Account',
+                                buttonColor: AppColors.secondaryColor,
+                                textColor: AppColors.white,
+                                onTap: () {
+                                  storeDataAndNavigate({
+                                    'vettingFile': '',
+                                    'image': '',
+                                    'createdAt': DateTime.now().toString(),
+                                    'updatedAt': ''
+                                  });
+                                },
+                              ),
                         gapMedium,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

@@ -2,14 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
+import 'package:irish_locums/features/home/domain/jobs_model.dart';
 import 'package:readmore/readmore.dart';
 
 class ViewShiftModal extends StatefulWidget {
-  const ViewShiftModal({super.key});
+  ViewShiftModal({super.key, required this.job});
+  JobModel job;
 
   @override
   State<ViewShiftModal> createState() => _ViewShiftModalState();
@@ -83,7 +86,7 @@ class _ViewShiftModalState extends State<ViewShiftModal> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextBold(
-                        'MPS',
+                        widget.job.title,
                         fontSize: 14,
                         color: AppColors.grey900,
                       ),
@@ -101,17 +104,17 @@ class _ViewShiftModalState extends State<ViewShiftModal> {
                   ),
                   const Gap(15),
                   RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                         text: "\$20.31/hr",
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.grey900,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                         ),
                         children: [
                           TextSpan(
-                            text: '/\$161.04(total)',
-                            style: TextStyle(
+                            text: '/\$${widget.job.salary}(total)',
+                            style: const TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 14,
                             ),
@@ -120,7 +123,7 @@ class _ViewShiftModalState extends State<ViewShiftModal> {
                   ),
                   const Gap(14),
                   TextBody(
-                    'Tuesday 21st September, 2022',
+                    DateFormat.yMMMMEEEEd().format(widget.job.startDate),
                     color: AppColors.grey,
                     fontSize: 12,
                   ),
@@ -160,7 +163,7 @@ class _ViewShiftModalState extends State<ViewShiftModal> {
                           ),
                           const Gap(3),
                           TextBody(
-                            'MPS',
+                            widget.job.title,
                             color: AppColors.blackColor,
                             fontSize: 14,
                           ),
@@ -188,7 +191,7 @@ class _ViewShiftModalState extends State<ViewShiftModal> {
                           ),
                           const Gap(3),
                           TextBody(
-                            'Permanent',
+                            widget.job.jobType,
                             color: AppColors.blackColor,
                             fontSize: 14,
                           ),
@@ -221,9 +224,9 @@ class _ViewShiftModalState extends State<ViewShiftModal> {
                     fontSize: 14,
                   ),
                   const Gap(22),
-                  const ReadMoreText(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Urna, amet, nulla adipiscing magna nullam tincidunt volutpat sit senectus. Sit amet tellus ut volutpat lorem ultrices posuere turpis. Sed fames consequat volutpat lacinia lobortis nunc neque. Tristique ut lacus vitae amet',
-                    style: TextStyle(
+                  ReadMoreText(
+                    widget.job.description,
+                    style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: AppColors.grey600),
@@ -231,7 +234,7 @@ class _ViewShiftModalState extends State<ViewShiftModal> {
                     trimMode: TrimMode.Line,
                     trimCollapsedText: 'ReadMore',
                     trimExpandedText: ' ReadLess',
-                    moreStyle: TextStyle(
+                    moreStyle: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: AppColors.secondaryColor),

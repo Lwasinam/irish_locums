@@ -1,3 +1,4 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:irish_locums/app/shared/app_bar.dart';
 import 'package:irish_locums/app/shared/busy_button.dart';
@@ -6,6 +7,8 @@ import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
+import 'package:irish_locums/features/auth/data/authRepository.dart';
+import 'package:provider/provider.dart';
 
 class SignupUserLocation extends StatefulWidget {
   const SignupUserLocation({Key? key}) : super(key: key);
@@ -15,12 +18,28 @@ class SignupUserLocation extends StatefulWidget {
 }
 
 class _SignupUserLocationState extends State<SignupUserLocation> {
-  _SignupUserLocationState() {
-    selected = '';
+  _SignupUserLocationState() {}
+
+  TextEditingController eirTextController = TextEditingController();
+  TextEditingController addressTextController = TextEditingController();
+  String? selectedCountry;
+
+  storeDataAndNavigate(Map data) {
+    setState(() {});
+    if (selectedCountry != null &&
+        addressTextController.text != '' &&
+        eirTextController.text != '') {
+      Provider.of<AuthRepository>(context, listen: false)
+          .userSignupData
+          .addAll(data);
+
+      Navigator.pushReplacementNamed(
+        context,
+        RouteName.signupAdditionalInfo,
+      );
+    }
   }
 
-  final _countyDropdown = ['Antrim', 'Armagh', 'Carlow'];
-  String selected = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,11 +80,21 @@ class _SignupUserLocationState extends State<SignupUserLocation> {
                         fontSize: 14,
                       ),
                       gapTiny,
-                      const InputField(
-                        controller: null,
+                      InputField(
+                        controller: addressTextController,
                         placeholder: '',
                         placeholderColor: AppColors.borderColor,
+                        onChanged: (value) {
+                          setState(() {});
+                        },
                       ),
+                      gapTiny,
+                      addressTextController.text == ''
+                          ? const Text(
+                              'Empty field',
+                              style: TextStyle(color: AppColors.red),
+                            )
+                          : const SizedBox(),
                       gapSmall,
                       gapMedium,
                       TextBody(
@@ -74,26 +103,46 @@ class _SignupUserLocationState extends State<SignupUserLocation> {
                         fontSize: 14,
                       ),
                       gapTiny,
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: AppColors.borderColor),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: DropdownButtonFormField(
-                            decoration:
-                                const InputDecoration(border: InputBorder.none),
-                            dropdownColor: AppColors.backgroundLightBlue,
-                            onChanged: (val) {},
-                            items: _countyDropdown.map((e) {
-                              return DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
-                              );
-                            }).toList(),
-                          ),
-                        ),
+                      GestureDetector(
+                        onTap: () {
+                          showCountryPicker(
+                              context: context,
+                              onSelect: (Country country) {
+                                setState(() {
+                                  selectedCountry =
+                                      country.displayNameNoCountryCode;
+                                });
+                              },
+                              showSearch: false,
+                              useSafeArea: true);
+                        },
+                        child: Container(
+                            padding: const EdgeInsets.only(left: 12, top: 5),
+                            height: 50,
+                            width: double.maxFinite,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                color: AppColors.borderColor,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  selectedCountry ?? 'select country',
+                                ),
+                                const Icon(Icons.arrow_drop_down)
+                              ],
+                            )),
                       ),
+                      gapTiny,
+                      selectedCountry == null
+                          ? const Text(
+                              'Empty field',
+                              style: TextStyle(color: AppColors.red),
+                            )
+                          : const SizedBox(),
                       gapSmall,
                       gapMedium,
                       TextBody(
@@ -101,11 +150,21 @@ class _SignupUserLocationState extends State<SignupUserLocation> {
                         color: AppColors.black,
                         fontSize: 14,
                       ),
-                      const InputField(
-                        controller: null,
+                      InputField(
+                        controller: eirTextController,
                         placeholder: '',
+                        onChanged: (value) {
+                          setState(() {});
+                        },
                         placeholderColor: AppColors.borderColor,
                       ),
+                      gapTiny,
+                      eirTextController.text == ''
+                          ? const Text(
+                              'Empty field',
+                              style: TextStyle(color: AppColors.red),
+                            )
+                          : const SizedBox(),
                       gapLarge,
                     ],
                   ),
@@ -119,10 +178,11 @@ class _SignupUserLocationState extends State<SignupUserLocation> {
                           buttonColor: AppColors.yellow,
                           textColor: AppColors.black,
                           onTap: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              RouteName.signupAdditionalInfo,
-                            );
+                            storeDataAndNavigate({
+                              'address': addressTextController.text,
+                              'county': selectedCountry,
+                              'eir_code': eirTextController.text
+                            });
                           },
                         ),
                         gapMedium,

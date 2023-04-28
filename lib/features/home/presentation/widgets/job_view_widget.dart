@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:irish_locums/app/shared/busy_button.dart';
 import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
+import 'package:irish_locums/features/home/domain/jobs_model.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class JobViewWidget extends StatefulWidget {
-  const JobViewWidget({super.key});
-
+  JobViewWidget({super.key, required this.job});
+  JobModel job;
   @override
   State<JobViewWidget> createState() => _JobViewWidgetState();
 }
@@ -89,7 +91,7 @@ class _JobViewWidgetState extends State<JobViewWidget> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             TextBold(
-                              'Support Pharmacist',
+                              widget.job.title,
                               color: AppColors.grey900,
                               fontSize: 14,
                             ),
@@ -113,7 +115,7 @@ class _JobViewWidgetState extends State<JobViewWidget> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: '/\$161.04',
+                                  text: '/\$${widget.job.salary}',
                                   style: GoogleFonts.roboto(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w400),
@@ -122,7 +124,7 @@ class _JobViewWidgetState extends State<JobViewWidget> {
                         ),
                         const Gap(14),
                         TextBody(
-                          'Tuesday 21st September, 2022',
+                          DateFormat.yMMMMEEEEd().format(widget.job.startDate),
                           color: AppColors.grey,
                           fontSize: 12,
                         ),
@@ -150,7 +152,7 @@ class _JobViewWidgetState extends State<JobViewWidget> {
                                   fontSize: 12,
                                 ),
                                 TextBody(
-                                  'Support Pharmacist',
+                                  widget.job.title,
                                   color: AppColors.blackColor,
                                   fontSize: 14,
                                 )
@@ -166,7 +168,7 @@ class _JobViewWidgetState extends State<JobViewWidget> {
                                   fontSize: 12,
                                 ),
                                 TextBody(
-                                  'Permanent',
+                                  widget.job.jobType,
                                   color: AppColors.blackColor,
                                   fontSize: 14,
                                 )

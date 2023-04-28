@@ -4,7 +4,8 @@ import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 
 class LoadingBranches extends StatelessWidget {
-  const LoadingBranches({super.key});
+  LoadingBranches({required this.title, Key? key}) : super(key: key);
+  String title;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class LoadingBranches extends StatelessWidget {
             ),
             const Gap(19),
             TextSemiBold(
-              'Fetching branches detail',
+              title,
               color: AppColors.tertiaryTextColor,
               fontSize: 16,
             )

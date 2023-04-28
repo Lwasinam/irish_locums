@@ -6,6 +6,8 @@ import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
+import 'package:irish_locums/features/auth/data/authRepository.dart';
+import 'package:provider/provider.dart';
 
 class EmployeeJobType extends StatefulWidget {
   const EmployeeJobType({Key? key}) : super(key: key);
@@ -15,6 +17,22 @@ class EmployeeJobType extends StatefulWidget {
 }
 
 class _EmployeeJobTypeState extends State<EmployeeJobType> {
+  storeDataAndNavigate(Map data) {
+    setState(() {});
+    if (selectedJobType != null && registrationNumberController.text != '') {
+      Provider.of<AuthRepository>(context, listen: false)
+          .userSignupData
+          .addAll(data);
+
+      Navigator.pushReplacementNamed(
+        context,
+        RouteName.signupEmployeeResume,
+      );
+    }
+  }
+
+  String? selectedJobType;
+  TextEditingController registrationNumberController = TextEditingController();
   final _jobType = [
     'APPRENTICESHIP',
     'CONTRACT',
@@ -72,7 +90,11 @@ class _EmployeeJobTypeState extends State<EmployeeJobType> {
                             decoration:
                                 const InputDecoration(border: InputBorder.none),
                             dropdownColor: AppColors.backgroundLightBlue,
-                            onChanged: (val) {},
+                            onChanged: (String? val) {
+                              setState(() {
+                                selectedJobType = val!.toLowerCase();
+                              });
+                            },
                             items: _jobType.map((e) {
                               return DropdownMenuItem(
                                 value: e,
@@ -82,6 +104,13 @@ class _EmployeeJobTypeState extends State<EmployeeJobType> {
                           ),
                         ),
                       ),
+                      gapTiny,
+                      selectedJobType == null
+                          ? const Text(
+                              'Empty field',
+                              style: TextStyle(color: AppColors.red),
+                            )
+                          : const SizedBox(),
                       gapSmall,
                       gapMedium,
                       TextBody(
@@ -89,11 +118,21 @@ class _EmployeeJobTypeState extends State<EmployeeJobType> {
                         color: AppColors.black,
                         fontSize: 14,
                       ),
-                      const InputField(
-                        controller: null,
+                      InputField(
+                        controller: registrationNumberController,
                         placeholder: '',
                         placeholderColor: AppColors.borderColor,
+                        onChanged: (value) {
+                          setState(() {});
+                        },
                       ),
+                      gapTiny,
+                      registrationNumberController.text == ''
+                          ? const Text(
+                              'Empty field',
+                              style: TextStyle(color: AppColors.red),
+                            )
+                          : const SizedBox(),
                       gapTiny,
                       TextBody(
                         'What is your pharmacist PSI number,doctor registration number or nurse registration number',
@@ -114,10 +153,10 @@ class _EmployeeJobTypeState extends State<EmployeeJobType> {
                           buttonColor: AppColors.yellow,
                           textColor: AppColors.black,
                           onTap: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              RouteName.signupEmployeeResume,
-                            );
+                            storeDataAndNavigate({
+                              'jobType': selectedJobType,
+                              'regNumber': registrationNumberController.text
+                            });
                           },
                         ),
                         gapMedium,

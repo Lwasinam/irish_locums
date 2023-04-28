@@ -6,6 +6,10 @@ import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
 import 'package:irish_locums/features/availability/presentation/widgets/app_bar_container.dart';
+import 'package:irish_locums/features/home/data/appliactions_repository.dart';
+import 'package:irish_locums/features/home/data/branches_repositiory.dart';
+import 'package:irish_locums/features/home/domain/applications_model.dart';
+import 'package:provider/provider.dart';
 
 class MyAplicationScreen extends StatefulWidget {
   const MyAplicationScreen({super.key});
@@ -15,6 +19,31 @@ class MyAplicationScreen extends StatefulWidget {
 }
 
 class _MyAplicationScreenState extends State<MyAplicationScreen> {
+  bool isLoading = false;
+  String? errorMessage;
+  List<MyApplications> listOfApplications = [];
+  getApplications() async {
+    setState(() {
+      isLoading = true;
+    });
+    var data = await Provider.of<ApplicationsRepository>(context, listen: false)
+        .getApplications();
+    if (data['status'] == true) {
+      setState(() {
+        listOfApplications =
+            Provider.of<ApplicationsRepository>(context, listen: false)
+                .myApplicationsList;
+      });
+    } else if (data['status'] == false) {
+      setState(() {
+        errorMessage = 'An error occured';
+      });
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,36 +54,52 @@ class _MyAplicationScreenState extends State<MyAplicationScreen> {
           subtitle: '',
           showBackIcon: true,
         ),
-        Padding(
-          padding: const EdgeInsets.only(
-            top: 164,
-            left: 17,
-            right: 17,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: List.generate(8, (index) {
-                return MyApplicationItem(
-                  title: 'Dun Laoghaire Pharmacy',
-                  status: 'Status: Accepted',
-                  image: AppAssets.folderIcon,
-                  onTapView: () {
-                    setState(() {
-                      setState(() {
-                        showActions = false;
-                      });
-                    });
-                    Navigator.pushNamed(
-                      context,
-                      RouteName.viewMyApplicationWidget,
-                    );
-                  },
-                  onTapDelete: () {},
-                );
-              }),
-            ),
-          ),
-        )
+        isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 4,
+                  color: AppColors.primaryColor,
+                  backgroundColor: AppColors.primaryColor.withOpacity(0.5),
+                ),
+              )
+            : listOfApplications.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(
+                      top: 110,
+                      left: 17,
+                      right: 17,
+                    ),
+                    child: ListView.builder(
+                      itemCount: listOfApplications.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        MyApplications application = listOfApplications[index];
+                        return MyApplicationItem(
+                          title: 'Dun Laoghaire Pharmacy',
+                          status: application.status,
+                          image: AppAssets.folderIcon,
+                          onTapView: () {
+                            setState(() {
+                              setState(() {
+                                showActions = false;
+                              });
+                            });
+                            Navigator.pushNamed(
+                              context,
+                              RouteName.viewMyApplicationWidget,
+                            );
+                          },
+                          onTapDelete: () {},
+                        );
+                      },
+                    ),
+                  )
+                : Center(
+                    child: TextBody(
+                      errorMessage ?? 'No applications found',
+                      color: AppColors.tertiaryTextColor,
+                      fontSize: 14,
+                    ),
+                  ),
       ]),
     );
   }

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
+import 'package:irish_locums/features/auth/data/authRepository.dart';
+import 'package:irish_locums/features/home/data/jobs_repository.dart';
+import 'package:irish_locums/features/home/domain/jobs_model.dart';
 import 'package:irish_locums/features/home/presentation/widgets/apply_shift_dialog.dart';
 import 'package:irish_locums/features/home/presentation/widgets/shift_filter_modal.dart';
+import 'package:provider/provider.dart';
 
 class ShiftListingWidget extends StatefulWidget {
   const ShiftListingWidget({super.key});
@@ -16,7 +22,79 @@ class ShiftListingWidget extends StatefulWidget {
 
 class _ShiftListingWidgetState extends State<ShiftListingWidget> {
   bool getShift = true;
+  String? errorMessage;
+  List<JobModel> jobsList = [
+    JobModel(
+        userId: "609c6f9f2e0e4c74b0a51701",
+        title: "Senior Software Engineer",
+        description:
+            "We are looking for a senior software engineer to join our team.",
+        payFrequency: "monthly",
+        workHour: "fulltime",
+        workPattern: "day shift",
+        startDate: DateTime.now(),
+        category: "Engineering",
+        endDate: DateTime.now(),
+        vacancies: 2,
+        salary: 80000,
+        jobType: "permanent",
+        branchId: "609c6f9f2e0e4c74b0a51702",
+        publishedDate: DateTime.now(),
+        expiredDate: DateTime.now(),
+        benefit: ["Health insurance", "Paid vacation"],
+        requirements: [
+          "5+ years of experience in software engineering",
+          "Strong problem-solving skills"
+        ],
+        isActive: true,
+        isDeleted: false,
+        createdAt: DateTime.now()),
+    JobModel(
+        userId: "609c6f9f2e0e4c74b0a51701",
+        title: "Senior Software Engineer",
+        description:
+            "We are looking for a senior software engineer to join our team.",
+        payFrequency: "monthly",
+        workHour: "fulltime",
+        workPattern: "day shift",
+        startDate: DateTime.now(),
+        category: "Engineering",
+        endDate: DateTime.now(),
+        vacancies: 2,
+        salary: 80000,
+        jobType: "permanent",
+        branchId: "609c6f9f2e0e4c74b0a51702",
+        publishedDate: DateTime.now(),
+        expiredDate: DateTime.now(),
+        benefit: ["Health insurance", "Paid vacation"],
+        requirements: [
+          "5+ years of experience in software engineering",
+          "Strong problem-solving skills"
+        ],
+        isActive: true,
+        isDeleted: false,
+        createdAt: DateTime.now())
+  ];
+
+  getJobsList() async {
+    setState(() {
+      getShift = true;
+    });
+    var data =
+        await Provider.of<JobsRepository>(context, listen: false).getJobs();
+
+    if (data['status'] == true) {
+      // jobsList = Provider.of<JobsRepository>(context, listen: false).jobsList;
+    } else if (data['status'] == false) {
+      errorMessage = 'an error occured';
+    }
+    setState(() {
+      getShift = false;
+    });
+  }
+
   onShiftGet() {
+    AuthRepository().isLoggedIn();
     setState(() {
       getShift = false;
     });
@@ -26,7 +104,7 @@ class _ShiftListingWidgetState extends State<ShiftListingWidget> {
   void initState() {
     Future.delayed(
       const Duration(seconds: 1),
-      onShiftGet,
+      getJobsList,
     );
     super.initState();
   }
@@ -39,10 +117,8 @@ class _ShiftListingWidgetState extends State<ShiftListingWidget> {
       ),
       child: getShift
           ? const FetchShiftProgressIndicator()
-          : SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: SingleChildScrollView(
-                child: Column(
+          : jobsList.isNotEmpty
+              ? Column(
                   children: [
                     const Gap(15),
                     Container(
@@ -103,161 +179,155 @@ class _ShiftListingWidgetState extends State<ShiftListingWidget> {
                         ),
                       ),
                     ),
-                    const Gap(16),
-                    Column(
-                      children: List.generate(
-                          4,
-                          (index) => Column(
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: jobsList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          JobModel job = jobsList[index];
+                          return Container(
+                            height: 196,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: AppColors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    height: 196,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 24,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      TextBold(
+                                        'Adrian Dunne Pharmacy',
+                                        color: AppColors.tertiaryTextColor,
+                                        fontSize: 14,
                                       ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                      Row(
                                         children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              TextBold(
-                                                'Adrian Dunne Pharmacy',
-                                                color:
-                                                    AppColors.tertiaryTextColor,
-                                                fontSize: 14,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  SvgPicture.asset(
-                                                      AppAssets.shareIcon),
-                                                  const Gap(22),
-                                                  SvgPicture.asset(
-                                                      AppAssets.bookmarkIcon),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          const Gap(12),
-                                          Row(
-                                            children: [
-                                              SvgPicture.asset(
-                                                  AppAssets.locationIcon),
-                                              const Gap(10),
-                                              TextBody(
-                                                'Lucan, 10km from you',
-                                                color: AppColors.grey,
-                                                fontSize: 10,
-                                              ),
-                                            ],
-                                          ),
-                                          const Gap(12),
-                                          Row(
-                                            children: [
-                                              SvgPicture.asset(
-                                                  AppAssets.timeIcon),
-                                              const Gap(10),
-                                              TextBody(
-                                                'Tuesday 21st, September, 2022',
-                                                color: AppColors.grey,
-                                                fontSize: 10,
-                                              ),
-                                              const Gap(8),
-                                              Container(
-                                                height: 3,
-                                                width: 3,
-                                                decoration: const BoxDecoration(
-                                                  color: AppColors.grey2,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                              ),
-                                              const Gap(8),
-                                              TextBody(
-                                                '9:00 am - 6:30 pm',
-                                                color: AppColors.grey,
-                                                fontSize: 10,
-                                              ),
-                                            ],
-                                          ),
-                                          const Gap(12),
-                                          Row(
-                                            children: [
-                                              SvgPicture.asset(AppAssets.home),
-                                              const Gap(10),
-                                              TextBody(
-                                                'MPS',
-                                                color: AppColors.grey,
-                                                fontSize: 10,
-                                              ),
-                                            ],
-                                          ),
-                                          const Gap(12),
-                                          RichText(
-                                            text: const TextSpan(
-                                                text: "\$20.31/hr",
-                                                style: TextStyle(
-                                                  color: AppColors
-                                                      .tertiaryTextColor,
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                                children: [
-                                                  TextSpan(
-                                                    text: '/\$161.04(total)',
-                                                    style: TextStyle(
-                                                      color: AppColors.grey,
-                                                      fontSize: 9,
-                                                    ),
-                                                  )
-                                                ]),
-                                          ),
-                                          const Gap(16),
-                                          InkWell(
-                                            onTap: () {
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return const ApplyShiftDialog();
-                                                  });
-                                            },
-                                            child: Container(
-                                              height: 40,
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                color: AppColors.primaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                              ),
-                                              child: Center(
-                                                child: TextBody(
-                                                  'Apply',
-                                                  color: AppColors
-                                                      .tertiaryTextColor,
-                                                ),
-                                              ),
-                                            ),
-                                          )
+                                          SvgPicture.asset(AppAssets.shareIcon),
+                                          const Gap(22),
+                                          SvgPicture.asset(
+                                              AppAssets.bookmarkIcon),
                                         ],
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                  const Gap(16)
+                                  const Gap(12),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(AppAssets.locationIcon),
+                                      const Gap(10),
+                                      TextBody(
+                                        'Lucan, 10km from you',
+                                        color: AppColors.grey,
+                                        fontSize: 10,
+                                      ),
+                                    ],
+                                  ),
+                                  const Gap(12),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(AppAssets.timeIcon),
+                                      const Gap(10),
+                                      TextBody(
+                                        DateFormat.yMMMMEEEEd()
+                                            .format(job.startDate),
+                                        color: AppColors.grey,
+                                        fontSize: 10,
+                                      ),
+                                      const Gap(8),
+                                      Container(
+                                        height: 3,
+                                        width: 3,
+                                        decoration: const BoxDecoration(
+                                          color: AppColors.grey2,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      const Gap(8),
+                                      TextBody(
+                                        '9:00 am - 6:30 pm',
+                                        color: AppColors.grey,
+                                        fontSize: 10,
+                                      ),
+                                    ],
+                                  ),
+                                  const Gap(12),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(AppAssets.home),
+                                      const Gap(10),
+                                      TextBody(
+                                        'MPS',
+                                        color: AppColors.grey,
+                                        fontSize: 10,
+                                      ),
+                                    ],
+                                  ),
+                                  const Gap(12),
+                                  RichText(
+                                    text: TextSpan(
+                                        text: "\$20.31/hr",
+                                        style: const TextStyle(
+                                          color: AppColors.tertiaryTextColor,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: '/\$${job.salary}(total)',
+                                            style: const TextStyle(
+                                              color: AppColors.grey,
+                                              fontSize: 9,
+                                            ),
+                                          )
+                                        ]),
+                                  ),
+                                  const Gap(16),
+                                  InkWell(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return ApplyShiftDialog(job: job);
+                                          });
+                                    },
+                                    child: Container(
+                                      height: 40,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primaryColor,
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Center(
+                                        child: TextBody(
+                                          'Apply',
+                                          color: AppColors.tertiaryTextColor,
+                                        ),
+                                      ),
+                                    ),
+                                  )
                                 ],
-                              )),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
+                )
+              : Center(
+                  child: Text(
+                    errorMessage ?? 'No Shifts Found',
+                    style: GoogleFonts.lato(color: AppColors.tertiaryTextColor),
+                  ),
                 ),
-              ),
-            ),
     );
   }
 }

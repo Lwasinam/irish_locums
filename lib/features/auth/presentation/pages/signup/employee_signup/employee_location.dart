@@ -6,6 +6,9 @@ import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
+import 'package:country_picker/country_picker.dart';
+import 'package:irish_locums/features/auth/data/authRepository.dart';
+import 'package:provider/provider.dart';
 
 class EmployeeLocation extends StatefulWidget {
   const EmployeeLocation({Key? key}) : super(key: key);
@@ -15,8 +18,26 @@ class EmployeeLocation extends StatefulWidget {
 }
 
 class _EmployeeLocationState extends State<EmployeeLocation> {
-  final _countyDropdown = ['Antrim', 'Armagh', 'Carlow'];
+  TextEditingController townTextController = TextEditingController();
+  String? selectedCountry;
   final _willingToRelocate = ['Yes', 'No'];
+  bool? canRelocate;
+
+  storeDataAndNavigate(Map data) {
+    setState(() {});
+    if (selectedCountry != null &&
+        canRelocate != null &&
+        townTextController.text != '') {
+      Provider.of<AuthRepository>(context, listen: false)
+          .userSignupData
+          .addAll(data);
+
+      Navigator.pushReplacementNamed(
+        context,
+        RouteName.signupEmployeeJobType,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +79,21 @@ class _EmployeeLocationState extends State<EmployeeLocation> {
                         fontSize: 14,
                       ),
                       gapTiny,
-                      const InputField(
-                        controller: null,
+                      InputField(
+                        controller: townTextController,
                         placeholder: '',
                         placeholderColor: AppColors.borderColor,
+                        onChanged: (vale) {
+                          setState(() {});
+                        },
                       ),
+                      gapTiny,
+                      townTextController.text == ''
+                          ? const Text(
+                              'Empty field',
+                              style: TextStyle(color: AppColors.red),
+                            )
+                          : const SizedBox(),
                       gapSmall,
                       gapMedium,
                       TextBody(
@@ -71,26 +102,46 @@ class _EmployeeLocationState extends State<EmployeeLocation> {
                         fontSize: 14,
                       ),
                       gapTiny,
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: AppColors.borderColor),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: DropdownButtonFormField(
-                            decoration:
-                                const InputDecoration(border: InputBorder.none),
-                            dropdownColor: AppColors.backgroundLightBlue,
-                            onChanged: (val) {},
-                            items: _countyDropdown.map((e) {
-                              return DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
-                              );
-                            }).toList(),
-                          ),
-                        ),
+                      GestureDetector(
+                        onTap: () {
+                          showCountryPicker(
+                              context: context,
+                              onSelect: (Country country) {
+                                setState(() {
+                                  selectedCountry =
+                                      country.displayNameNoCountryCode;
+                                });
+                              },
+                              showSearch: false,
+                              useSafeArea: true);
+                        },
+                        child: Container(
+                            padding: const EdgeInsets.only(left: 12, top: 5),
+                            height: 50,
+                            width: double.maxFinite,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                color: AppColors.borderColor,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  selectedCountry ?? 'select country',
+                                ),
+                                const Icon(Icons.arrow_drop_down)
+                              ],
+                            )),
                       ),
+                      gapTiny,
+                      selectedCountry == null
+                          ? const Text(
+                              'Empty field',
+                              style: TextStyle(color: AppColors.red),
+                            )
+                          : const SizedBox(),
                       gapSmall,
                       gapMedium,
                       TextBody(
@@ -109,7 +160,15 @@ class _EmployeeLocationState extends State<EmployeeLocation> {
                             decoration:
                                 const InputDecoration(border: InputBorder.none),
                             dropdownColor: AppColors.backgroundLightBlue,
-                            onChanged: (val) {},
+                            onChanged: (String? val) {
+                              setState(() {
+                                if (val == 'Yes') {
+                                  canRelocate = true;
+                                } else if (val == 'No') {
+                                  canRelocate = false;
+                                }
+                              });
+                            },
                             items: _willingToRelocate.map((e) {
                               return DropdownMenuItem(
                                 value: e,
@@ -119,6 +178,13 @@ class _EmployeeLocationState extends State<EmployeeLocation> {
                           ),
                         ),
                       ),
+                      gapTiny,
+                      canRelocate == null
+                          ? const Text(
+                              'Empty field',
+                              style: TextStyle(color: AppColors.red),
+                            )
+                          : const SizedBox(),
                       gapLarge,
                     ],
                   ),
@@ -132,10 +198,11 @@ class _EmployeeLocationState extends State<EmployeeLocation> {
                           buttonColor: AppColors.yellow,
                           textColor: AppColors.black,
                           onTap: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              RouteName.signupEmployeeJobType,
-                            );
+                            storeDataAndNavigate({
+                              'city': townTextController.text,
+                              'country': selectedCountry,
+                              'canRelocate': canRelocate
+                            });
                           },
                         ),
                         gapMedium,

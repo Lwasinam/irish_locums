@@ -6,7 +6,9 @@ import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
+import 'package:irish_locums/features/auth/data/authRepository.dart';
 import 'package:irish_locums/features/auth/presentation/widgets/upload_widget.dart';
+import 'package:provider/provider.dart';
 
 class SecondResume extends StatefulWidget {
   const SecondResume({Key? key}) : super(key: key);
@@ -16,6 +18,22 @@ class SecondResume extends StatefulWidget {
 }
 
 class _SecondResumeState extends State<SecondResume> {
+  TextEditingController proffessionalHeadlineController =
+      TextEditingController();
+  storeDataAndNavigate(Map data) {
+    setState(() {});
+    if (proffessionalHeadlineController.text != '') {
+      Provider.of<AuthRepository>(context, listen: false)
+          .userSignupData
+          .addAll(data);
+
+      Navigator.pushReplacementNamed(
+        context,
+        RouteName.signupEmployeeUpload,
+      );
+    }
+  }
+
   bool isChecked = false;
 
   Color getColor(Set<MaterialState> states) {
@@ -70,11 +88,21 @@ class _SecondResumeState extends State<SecondResume> {
                         fontSize: 14,
                       ),
                       gapTiny,
-                      const InputField(
-                        controller: null,
+                      InputField(
+                        controller: proffessionalHeadlineController,
                         placeholder: '',
                         placeholderColor: AppColors.borderColor,
+                        onChanged: (value) {
+                          setState(() {});
+                        },
                       ),
+                      gapTiny,
+                      proffessionalHeadlineController.text == ''
+                          ? const Text(
+                              'Empty field',
+                              style: TextStyle(color: AppColors.red),
+                            )
+                          : const SizedBox(),
                       gapTiny,
                       TextBody(
                         'Describe yourself in a few words, for example: Experienced Web Developer',
@@ -134,10 +162,11 @@ class _SecondResumeState extends State<SecondResume> {
                           buttonColor: AppColors.yellow,
                           textColor: AppColors.black,
                           onTap: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              RouteName.signupEmployeeUpload,
-                            );
+                            storeDataAndNavigate({
+                              'professionalHeadline':
+                                  proffessionalHeadlineController.text,
+                              'profileSummary': ''
+                            });
                           },
                         ),
                         gapMedium,

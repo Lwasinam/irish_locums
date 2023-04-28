@@ -10,6 +10,8 @@ class InputField extends StatefulWidget {
   const InputField({
     required this.controller,
     required this.placeholder,
+    this.errorText,
+    this.validator,
     this.enterPressed,
     this.fieldFocusNode,
     this.nextFocusNode,
@@ -38,6 +40,7 @@ class InputField extends StatefulWidget {
   final Color labelTextColor;
   final Color placeholderColor;
   final TextEditingController? controller;
+  final String? errorText;
   final TextInputType textInputType;
   final bool password;
   final bool isReadOnly;
@@ -51,6 +54,7 @@ class InputField extends StatefulWidget {
   final String? additionalNote;
   final Function? onTap;
   final Function(String)? onChanged;
+  final String? Function(String?)? validator;
   final Color backgroundColor;
   final String? label;
   final bool showLabel;
@@ -100,20 +104,19 @@ class _InputFieldState extends State<InputField> {
                         }
                       : null,
                   child: Container(
-                    height: widget.height,
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    decoration: BoxDecoration(
-                      color: widget.backgroundColor,
-                      border: Border.all(color: widget.validationColor),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
+                    //height: widget.height,
+                    // alignment: Alignment.centerLeft,
+                    // padding: const EdgeInsets.symmetric(horizontal: 18),
+                    // decoration: BoxDecoration(
+                    //   color: widget.backgroundColor,
+                    //   border: Border.all(color: widget.validationColor),
+                    //   borderRadius: BorderRadius.circular(5),
+                    // ),
                     child: Row(
                       children: <Widget>[
-                        widget.prefix ?? const SizedBox(),
-                        const Gap(10),
+                        // const Gap(10),
                         Expanded(
-                          child: TextField(
+                          child: TextFormField(
                             onTap: widget.showLabel
                                 ? () {
                                     setState(() {
@@ -127,6 +130,7 @@ class _InputFieldState extends State<InputField> {
                                     }
                                   }
                                 : null,
+                            obscuringCharacter: '*',
                             controller: widget.controller,
                             keyboardType: widget.textInputType,
                             inputFormatters: widget.formatter ?? [],
@@ -136,10 +140,53 @@ class _InputFieldState extends State<InputField> {
                             onEditingComplete: () {},
                             obscureText: isPassword,
                             readOnly: widget.isReadOnly,
+                            validator: widget.validator,
                             style: const TextStyle(color: AppColors.black),
                             decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 8.0),
+                              prefix: widget.prefix ?? const SizedBox(),
+                              suffix: widget.suffix ??
+                                  GestureDetector(
+                                    onTap: () => setState(() {
+                                      isPassword = !isPassword;
+                                    }),
+                                    child: widget.password
+                                        ? Container(
+                                            width: 30,
+                                            height: 30,
+                                            alignment: Alignment.center,
+                                            child: isPassword
+                                                ? SvgPicture.asset(
+                                                    AppAssets.visibility)
+                                                : const Icon(
+                                                    Icons.visibility_outlined,
+                                                    color: Color(0xff71759D),
+                                                    size: 18,
+                                                  ),
+                                          )
+                                        : Container(
+                                            width: 30,
+                                            height: 30,
+                                            alignment: Alignment.center,
+                                          ),
+                                  ),
                               hintText: widget.placeholder,
-                              border: InputBorder.none,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide:
+                                      BorderSide(color: AppColors.borderColor)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide:
+                                      BorderSide(color: AppColors.borderColor)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide:
+                                      BorderSide(color: AppColors.borderColor)),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide: BorderSide(color: AppColors.red)),
                               labelStyle: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 14,
@@ -153,76 +200,51 @@ class _InputFieldState extends State<InputField> {
                             ),
                           ),
                         ),
-                        widget.suffix ??
-                            GestureDetector(
-                              onTap: () => setState(() {
-                                isPassword = !isPassword;
-                              }),
-                              child: widget.password
-                                  ? Container(
-                                      width: 30,
-                                      height: 30,
-                                      alignment: Alignment.center,
-                                      child: isPassword
-                                          ? SvgPicture.asset(
-                                              AppAssets.visibility)
-                                          : const Icon(
-                                              Icons.visibility_off_outlined,
-                                              color: Color(0xff71759D),
-                                              size: 25,
-                                            ),
-                                    )
-                                  : Container(
-                                      width: 30,
-                                      height: 30,
-                                      alignment: Alignment.center,
-                                    ),
-                            ),
                       ],
                     ),
                   ),
                 ),
               ),
-              if (widget.showLabel)
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: activiateLabe
-                      ? Container(
-                          //check here
-                          color: AppColors.dotColor,
-                          child: SizedBox(
-                            child: TextBody(
-                              ' ${widget.label} ',
-                              fontSize: 12,
-                              color: widget.fieldFocusNode != null
-                                  ? AppColors.primaryColor
-                                  : widget.labelTextColor,
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),
-                )
-              else
-                const SizedBox(),
+              // if (widget.showLabel)
+              //   Padding(
+              //     padding: const EdgeInsets.only(left: 10),
+              //     child: activiateLabe
+              //         ? Container(
+              //             //check here
+              //             color: AppColors.dotColor,
+              //             child: SizedBox(
+              //               child: TextBody(
+              //                 ' ${widget.label} ',
+              //                 fontSize: 12,
+              //                 color: widget.fieldFocusNode != null
+              //                     ? AppColors.primaryColor
+              //                     : widget.labelTextColor,
+              //               ),
+              //             ),
+              //           )
+              //         : const SizedBox(),
+              //   )
+              // else
+              //   const SizedBox(),
             ],
           ),
         ),
-        if (widget.validationMessage != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: TextBody(
-              widget.validationMessage!,
-              color: Colors.red,
-              fontSize: 10,
-            ),
-          )
-        else
-          const SizedBox(),
-        if (widget.additionalNote != null) const Gap(5) else const SizedBox(),
-        if (widget.additionalNote != null)
-          TextBody(widget.additionalNote!)
-        else
-          const SizedBox(),
+        // if (widget.validationMessage != null)
+        //   Padding(
+        //     padding: const EdgeInsets.only(top: 2),
+        //     child: TextBody(
+        //       widget.validationMessage!,
+        //       color: Colors.red,
+        //       fontSize: 10,
+        //     ),
+        //   )
+        // else
+        //   const SizedBox(),
+        // if (widget.additionalNote != null) const Gap(5) else const SizedBox(),
+        // if (widget.additionalNote != null)
+        //   TextBody(widget.additionalNote!)
+        // else
+        //   const SizedBox(),
       ],
     );
   }

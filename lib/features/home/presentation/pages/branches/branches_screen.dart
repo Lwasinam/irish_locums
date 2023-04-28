@@ -6,7 +6,10 @@ import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/features/availability/presentation/widgets/app_bar_container.dart';
+import 'package:irish_locums/features/home/data/branches_repositiory.dart';
+import 'package:irish_locums/features/home/domain/branches_model.dart';
 import 'package:irish_locums/features/home/presentation/widgets/loading_branch_widgets.dart';
+import 'package:provider/provider.dart';
 
 class BranchesScreen extends StatefulWidget {
   const BranchesScreen({super.key});
@@ -17,7 +20,23 @@ class BranchesScreen extends StatefulWidget {
 
 class _BranchesScreenState extends State<BranchesScreen> {
   bool getbrnaches = true;
-  getBranches() {
+  String? errorMessage;
+  List<BranchModel> listOfBranches = [];
+  getBranches() async {
+    var data = await Provider.of<BranchesRepository>(context, listen: false)
+        .getBranches();
+
+    if (data['status'] == true) {
+      setState(() {
+        listOfBranches = Provider.of<BranchesRepository>(context, listen: false)
+            .branchesList;
+      });
+    } else if (data['status'] == false) {
+      setState(() {
+        errorMessage = 'An error occured';
+      });
+    }
+
     setState(() {
       getbrnaches = false;
     });
@@ -78,13 +97,16 @@ class _BranchesScreenState extends State<BranchesScreen> {
             ),
           ),
           getbrnaches
-              ? const Expanded(child: LoadingBranches())
-              : Expanded(
-                  child: SizedBox(
-                    height: double.infinity,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: List.generate(5, (index) {
+              ? Expanded(
+                  child: LoadingBranches(
+                  title: 'Fetching Btanches',
+                ))
+              : listOfBranches.isNotEmpty
+                  ? Expanded(
+                      child: ListView.builder(
+                        itemCount: listOfBranches.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          BranchModel branch = listOfBranches[index];
                           return Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 17,
@@ -106,7 +128,7 @@ class _BranchesScreenState extends State<BranchesScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     TextBold(
-                                      'General Hospital, Dublin',
+                                      branch.name,
                                       color: AppColors.tertiaryTextColor,
                                       fontSize: 14,
                                     ),
@@ -118,7 +140,7 @@ class _BranchesScreenState extends State<BranchesScreen> {
                                         ),
                                         const Gap(10),
                                         TextBody(
-                                          'Dublin, 30km from you',
+                                          '${branch.address}, 30km from you',
                                           color: AppColors.tertiaryTextColor
                                               .withOpacity(0.39),
                                           fontSize: 10,
@@ -170,11 +192,18 @@ class _BranchesScreenState extends State<BranchesScreen> {
                               ),
                             ),
                           );
-                        }),
+                        },
                       ),
-                    ),
-                  ),
-                ),
+                    )
+                  : Expanded(
+                      child: Center(
+                        child: TextBody(
+                          errorMessage ?? 'No Branches',
+                          fontSize: 14,
+                          color: AppColors.tertiaryTextColor,
+                        ),
+                      ),
+                    )
         ],
       ),
     );
