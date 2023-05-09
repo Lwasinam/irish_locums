@@ -7,21 +7,23 @@ import 'package:irish_locums/features/home/presentation/pages/branches/branches_
 import 'package:irish_locums/features/home/presentation/pages/jobs/jobs_screen.dart';
 import 'package:irish_locums/features/home/presentation/pages/jobs/post_job_page.dart';
 import 'package:irish_locums/features/home/presentation/pages/more/more_page.dart';
+import 'package:irish_locums/features/home/presentation/pages/more/my_application_screen.dart';
 import 'package:irish_locums/features/home/presentation/pages/shift_listing_page.dart';
 
-class AppNavBar extends StatefulWidget {
-  const AppNavBar({super.key});
+class EmployerAppNavBar extends StatefulWidget {
+  const EmployerAppNavBar({super.key});
 
   @override
-  State<AppNavBar> createState() => _AppNavBarState();
+  State<EmployerAppNavBar> createState() => _AppNavBarState();
 }
 
-class _AppNavBarState extends State<AppNavBar> {
+class _AppNavBarState extends State<EmployerAppNavBar> {
   int _currentIndex = 0;
   List tabs = [
-    const ShiftListingPage(),
-    const AvailabilityPage(),
-    const BranchesScreen(),
+    const JobsScreen(),
+    // const ShiftListingPage(),
+    MyAplicationScreen(),
+    const PostJobScreen(),
     const JobsScreen(),
     MorePage(),
   ];
@@ -82,7 +84,7 @@ class _AppNavBarState extends State<AppNavBar> {
                   bottom: 7,
                 ),
                 child: SvgPicture.asset(
-                  AppAssets.availabilityIcon,
+                  AppAssets.applicationsIcon,
                   height: 20,
                   width: 20,
                 ),
@@ -92,20 +94,20 @@ class _AppNavBarState extends State<AppNavBar> {
                   bottom: 7,
                 ),
                 child: SvgPicture.asset(
-                  AppAssets.availabilityIcon,
+                  AppAssets.applicationsIcon,
                   height: 20,
                   width: 20,
                   color: AppColors.primaryColor,
                 ),
               ),
-              label: 'Availabilty'),
+              label: 'Applications'),
           BottomNavigationBarItem(
             icon: Padding(
               padding: const EdgeInsets.only(
                 bottom: 7,
               ),
               child: SvgPicture.asset(
-                AppAssets.branchIcon,
+                AppAssets.addJobIcon,
                 width: 20,
                 height: 20,
               ),
@@ -113,13 +115,13 @@ class _AppNavBarState extends State<AppNavBar> {
             activeIcon: Padding(
               padding: const EdgeInsets.only(bottom: 7),
               child: SvgPicture.asset(
-                AppAssets.branchIcon,
+                AppAssets.addJobIcon,
                 color: AppColors.primaryColor,
                 width: 20,
                 height: 20,
               ),
             ),
-            label: 'Branches',
+            label: 'Jobs',
           ),
           BottomNavigationBarItem(
             icon: Padding(
@@ -141,7 +143,7 @@ class _AppNavBarState extends State<AppNavBar> {
                 height: 20,
               ),
             ),
-            label: 'Jobs',
+            label: 'Listings',
           ),
           BottomNavigationBarItem(
             icon: Padding(

@@ -54,4 +54,6 @@ class AppAssets {
   static const String editIcon = 'assets/icons/editIcon.svg';
   static const String viewIconn = 'assets/icons/viewIcon.svg';
   static const String deleteIconn = 'assets/icons/deleteIcon.svg';
+  static const String applicationsIcon = 'assets/icons/applications.svg';
+  static const String addJobIcon = 'assets/icons/addJob.svg';
 }

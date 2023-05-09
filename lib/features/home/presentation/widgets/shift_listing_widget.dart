@@ -24,67 +24,70 @@ class _ShiftListingWidgetState extends State<ShiftListingWidget> {
   bool getShift = true;
   String? errorMessage;
   List<JobModel> jobsList = [
-    JobModel(
-        userId: "609c6f9f2e0e4c74b0a51701",
-        title: "Senior Software Engineer",
-        description:
-            "We are looking for a senior software engineer to join our team.",
-        payFrequency: "monthly",
-        workHour: "fulltime",
-        workPattern: "day shift",
-        startDate: DateTime.now(),
-        category: "Engineering",
-        endDate: DateTime.now(),
-        vacancies: 2,
-        salary: 80000,
-        jobType: "permanent",
-        branchId: "609c6f9f2e0e4c74b0a51702",
-        publishedDate: DateTime.now(),
-        expiredDate: DateTime.now(),
-        benefit: ["Health insurance", "Paid vacation"],
-        requirements: [
-          "5+ years of experience in software engineering",
-          "Strong problem-solving skills"
-        ],
-        isActive: true,
-        isDeleted: false,
-        createdAt: DateTime.now()),
-    JobModel(
-        userId: "609c6f9f2e0e4c74b0a51701",
-        title: "Senior Software Engineer",
-        description:
-            "We are looking for a senior software engineer to join our team.",
-        payFrequency: "monthly",
-        workHour: "fulltime",
-        workPattern: "day shift",
-        startDate: DateTime.now(),
-        category: "Engineering",
-        endDate: DateTime.now(),
-        vacancies: 2,
-        salary: 80000,
-        jobType: "permanent",
-        branchId: "609c6f9f2e0e4c74b0a51702",
-        publishedDate: DateTime.now(),
-        expiredDate: DateTime.now(),
-        benefit: ["Health insurance", "Paid vacation"],
-        requirements: [
-          "5+ years of experience in software engineering",
-          "Strong problem-solving skills"
-        ],
-        isActive: true,
-        isDeleted: false,
-        createdAt: DateTime.now())
+    // JobModel(
+    //     userId: '609c6f9f2e0e4c74b0a51701',
+    //     title: "Senior Software Engineer",
+    //     description:
+    //         "We are looking for a senior software engineer to join our team.",
+    //     payFrequency: "monthly",
+    //     workHour: "fulltime",
+    //     workPattern: "day shift",
+    //     startDate: DateTime.now(),
+    //     category: "Engineering",
+    //     endDate: DateTime.now(),
+    //     vacancies: 2,
+    //     salary: 80000,
+    //     jobType: "permanent",
+    //     branchId: "609c6f9f2e0e4c74b0a51702",
+    //     publishedDate: DateTime.now(),
+    //     expiredDate: DateTime.now(),
+    //     benefit: ["Health insurance", "Paid vacation"],
+    //     requirements: [
+    //       "5+ years of experience in software engineering",
+    //       "Strong problem-solving skills"
+    //     ],
+    //     isActive: true,
+    //     isDeleted: false,
+    //     createdAt: DateTime.now()),
+    // JobModel(
+    //     userId: '609c6f9f2e0e4c74b0a51701',
+    //     title: "Senior Software Engineer",
+    //     description:
+    //         "We are looking for a senior software engineer to join our team.",
+    //     payFrequency: "monthly",
+    //     workHour: "fulltime",
+    //     workPattern: "day shift",
+    //     startDate: DateTime.now(),
+    //     category: "Engineering",
+    //     endDate: DateTime.now(),
+    //     vacancies: 2,
+    //     salary: 80000,
+    //     jobType: "permanent",
+    //     branchId: "609c6f9f2e0e4c74b0a51702",
+    //     publishedDate: DateTime.now(),
+    //     expiredDate: DateTime.now(),
+    //     benefit: ["Health insurance", "Paid vacation"],
+    //     requirements: [
+    //       "5+ years of experience in software engineering",
+    //       "Strong problem-solving skills"
+    //     ],
+    //     isActive: true,
+    //     isDeleted: false,
+    //     createdAt: DateTime.now())
   ];
 
   getJobsList() async {
-    setState(() {
-      getShift = true;
-    });
+    if (mounted) {
+      setState(() {
+        getShift = true;
+      });
+    }
+
     var data =
         await Provider.of<JobsRepository>(context, listen: false).getJobs();
 
     if (data['status'] == true) {
-      // jobsList = Provider.of<JobsRepository>(context, listen: false).jobsList;
+      jobsList = Provider.of<JobsRepository>(context, listen: false).jobsList;
     } else if (data['status'] == false) {
       errorMessage = 'an error occured';
     }
@@ -204,7 +207,7 @@ class _ShiftListingWidgetState extends State<ShiftListingWidget> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       TextBold(
-                                        'Adrian Dunne Pharmacy',
+                                        job.title,
                                         color: AppColors.tertiaryTextColor,
                                         fontSize: 14,
                                       ),
@@ -295,7 +298,9 @@ class _ShiftListingWidgetState extends State<ShiftListingWidget> {
                                       showDialog(
                                           context: context,
                                           builder: (context) {
-                                            return ApplyShiftDialog(job: job);
+                                            return ApplyShiftDialog(
+                                              job: job,
+                                            );
                                           });
                                     },
                                     child: Container(

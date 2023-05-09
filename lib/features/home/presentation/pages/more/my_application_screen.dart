@@ -9,10 +9,14 @@ import 'package:irish_locums/features/availability/presentation/widgets/app_bar_
 import 'package:irish_locums/features/home/data/appliactions_repository.dart';
 import 'package:irish_locums/features/home/data/branches_repositiory.dart';
 import 'package:irish_locums/features/home/domain/applications_model.dart';
+import 'package:irish_locums/features/home/domain/jobs_model.dart';
 import 'package:provider/provider.dart';
 
 class MyAplicationScreen extends StatefulWidget {
-  const MyAplicationScreen({super.key});
+  MyAplicationScreen(
+      {super.key, this.ViewApplicationsForSpecificJob = false, this.jobModel});
+  bool ViewApplicationsForSpecificJob;
+  JobModel? jobModel;
 
   @override
   State<MyAplicationScreen> createState() => _MyAplicationScreenState();
@@ -21,13 +25,22 @@ class MyAplicationScreen extends StatefulWidget {
 class _MyAplicationScreenState extends State<MyAplicationScreen> {
   bool isLoading = false;
   String? errorMessage;
+
+  var data;
   List<MyApplications> listOfApplications = [];
   getApplications() async {
     setState(() {
       isLoading = true;
     });
-    var data = await Provider.of<ApplicationsRepository>(context, listen: false)
-        .getApplications();
+
+    if (widget.ViewApplicationsForSpecificJob) {
+      data = await Provider.of<ApplicationsRepository>(context, listen: false)
+          .getApplicationsForSpecificJob(widget.jobModel!.id!);
+    } else {
+      data = await Provider.of<ApplicationsRepository>(context, listen: false)
+          .getApplications();
+    }
+
     if (data['status'] == true) {
       setState(() {
         listOfApplications =
@@ -42,6 +55,13 @@ class _MyAplicationScreenState extends State<MyAplicationScreen> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  @override
+  void initState() {
+    getApplications();
+
+    super.initState();
   }
 
   @override
@@ -174,7 +194,7 @@ class _MyApplicationItemState extends State<MyApplicationItem> {
                           const Gap(4),
                           widget.showStatus
                               ? TextBody(
-                                  widget.status,
+                                  'STATUS: ${widget.status}',
                                   color: AppColors.tertiaryTextColor
                                       .withOpacity(0.39),
                                   fontSize: 10,

@@ -99,7 +99,7 @@ class _BranchesScreenState extends State<BranchesScreen> {
           getbrnaches
               ? Expanded(
                   child: LoadingBranches(
-                  title: 'Fetching Btanches',
+                  title: 'Fetching Branches',
                 ))
               : listOfBranches.isNotEmpty
                   ? Expanded(

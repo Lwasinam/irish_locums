@@ -127,7 +127,7 @@ class _EmployeeUserAccountState extends State<EmployeeUserAccount> {
                           controller: null,
                           placeholder: '**********',
                           placeholderColor: AppColors.borderColor,
-                          suffix: SvgPicture.asset(AppAssets.visibility),
+                          password: true,
                           onChanged: (value) {
                             print(passwordController.text);
                           },

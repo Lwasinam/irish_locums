@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:irish_locums/app/shared/shared_pref_helper.dart';
 import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
@@ -8,7 +9,13 @@ import 'package:irish_locums/core/navigators/route_name.dart';
 import 'package:irish_locums/features/availability/presentation/widgets/app_bar_container.dart';
 
 class MorePage extends StatelessWidget {
-  const MorePage({super.key});
+  MorePage({super.key});
+  SharedPrefHelper prefHelper = SharedPrefHelper();
+
+  deleteToken() async {
+    await prefHelper.init();
+    await prefHelper.deleteValue('token');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +126,9 @@ class MorePage extends StatelessWidget {
                           const Gap(16),
                           InkWell(
                             onTap: () {
-                              Navigator.pushNamed(context, RouteName.signin);
+                              deleteToken();
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, RouteName.signin, (route) => false);
                             },
                             child: Container(
                               height: 50,

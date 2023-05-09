@@ -118,7 +118,9 @@ class _SecondResumeState extends State<SecondResume> {
                         fontSize: 14,
                       ),
                       gapTiny,
-                      const UploadWidget(),
+                      UploadWidget(
+                        fileName: 'profileSummary',
+                      ),
                       gapTiny,
                       TextBody(
                         'Upload a document with your skills, specialities, experience or goals',

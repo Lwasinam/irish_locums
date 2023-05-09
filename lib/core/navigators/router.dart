@@ -2,6 +2,8 @@ import 'package:irish_locums/core/navigators/route_extension.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
 import 'package:irish_locums/features/auth/presentation/pages/authStartPage.dart';
 import 'package:irish_locums/features/home/presentation/pages/app_nav_bar.dart';
+import 'package:irish_locums/features/home/presentation/pages/employer_nav_bar.dart';
+import 'package:irish_locums/features/home/presentation/pages/jobs/post_job_page.dart';
 import 'package:irish_locums/features/home/presentation/pages/more/change_password.dart';
 import 'package:irish_locums/features/home/presentation/pages/more/cpd_read-more_widget.dart';
 import 'package:irish_locums/features/home/presentation/pages/more/cpd_screen.dart';
@@ -140,7 +142,7 @@ Route<T> onGenerateRoute<T>(RouteSettings settings) {
     case RouteName.morePage:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: const MorePage(),
+        viewToShow: MorePage(),
       );
     case RouteName.profilePage:
       return _getPageRoute(
@@ -190,7 +192,7 @@ Route<T> onGenerateRoute<T>(RouteSettings settings) {
     case RouteName.myApplicationScreen:
       return _getPageRoute(
         routeName: settings.name!,
-        viewToShow: const MyAplicationScreen(),
+        viewToShow: MyAplicationScreen(),
       );
     case RouteName.viewMyApplicationWidget:
       return _getPageRoute(
@@ -201,6 +203,16 @@ Route<T> onGenerateRoute<T>(RouteSettings settings) {
       return _getPageRoute(
         routeName: settings.name!,
         viewToShow: const MyBookmarkScreen(),
+      );
+    case RouteName.postAjob:
+      return _getPageRoute(
+        routeName: settings.name!,
+        viewToShow: const PostJobScreen(),
+      );
+    case RouteName.employerAppNavPage:
+      return _getPageRoute(
+        routeName: settings.name!,
+        viewToShow: const EmployerAppNavBar(),
       );
 
     default:

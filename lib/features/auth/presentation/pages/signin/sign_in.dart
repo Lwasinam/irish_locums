@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:irish_locums/app/shared/app_bar.dart';
 import 'package:irish_locums/app/shared/busy_button.dart';
 import 'package:irish_locums/app/shared/input_field.dart';
+import 'package:irish_locums/app/shared/shared_pref_helper.dart';
 import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
@@ -23,7 +24,25 @@ TextEditingController passwordController = TextEditingController();
 
 class _SigninState extends State<Signin> {
   bool isLoading = false;
+  bool isChecked = false;
+  SharedPrefHelper prefHelper = SharedPrefHelper();
   var signInKey = GlobalKey<FormState>();
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.blue;
+    }
+    return AppColors.yellow;
+  }
+
+  initPrefhelper() async {
+    await prefHelper.init();
+  }
+
   storeDataAndNavigate(Map data) async {
     if (signInKey.currentState!.validate()) {
       Provider.of<AuthRepository>(context, listen: false)
@@ -44,7 +63,11 @@ class _SigninState extends State<Signin> {
               content: Text('Login Successful'),
             ),
           );
-          Navigator.pushNamed(context, RouteName.appNavPage);
+          if (isChecked) {
+            Navigator.pushNamed(context, RouteName.employerAppNavPage);
+          } else {
+            Navigator.pushNamed(context, RouteName.appNavPage);
+          }
         } else if (response['auth'] == false) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -60,6 +83,16 @@ class _SigninState extends State<Signin> {
         );
       }
     }
+  }
+
+  forgetPassword() async {
+    await Provider.of<AuthRepository>(context, listen: false).forgotPassword();
+  }
+
+  @override
+  void initState() {
+    initPrefhelper();
+    super.initState();
   }
 
   @override
@@ -129,10 +162,58 @@ class _SigninState extends State<Signin> {
                           },
                         ),
                         gapTiny,
-                        TextBody(
-                          'Forgot Password?',
-                          color: AppColors.yellow,
-                          fontSize: 14,
+                        GestureDetector(
+                          onTap: () {
+                            forgetPassword();
+                          },
+                          child: TextBody(
+                            'Forgot Password?',
+                            color: AppColors.yellow,
+                            fontSize: 14,
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Checkbox(
+                              value: isChecked,
+                              fillColor:
+                                  MaterialStateProperty.resolveWith(getColor),
+                              onChanged: (bool? value) async {
+                                setState(() {
+                                  isChecked = value!;
+                                });
+
+                                isChecked
+                                    ? await prefHelper.setValue(
+                                        'role', 'employer')
+                                    : await prefHelper.setValue(
+                                        'role', 'employee');
+                              },
+                            ),
+                            gapTiny,
+                            RichText(
+                              text: const TextSpan(
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: AppColors.textGrey,
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: 'I am an ',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  TextSpan(
+                                      text: 'Irish Locums Employer',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.yellow,
+                                        fontSize: 12,
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

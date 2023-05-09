@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:irish_locums/app/shared/app_bar.dart';
 import 'package:irish_locums/app/shared/busy_button.dart';
 import 'package:irish_locums/app/shared/input_field.dart';
+import 'package:irish_locums/app/shared/shared_pref_helper.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
@@ -23,9 +26,29 @@ class _AccountInformationState extends State<AccountInformation> {
   TextEditingController phoneNumberController = TextEditingController();
 
   var signupKey = GlobalKey<FormState>();
+  FutureOr<bool> checkIfUserExists() async {
+    Map? response = await Provider.of<AuthRepository>(context, listen: false)
+        .checkIfUserExists(emailController.text);
+    if (response != null) {
+      if (response['status'] == false) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(response['msg']),
+        ));
+        return true;
+      } else if (response['msg'] == null) {
+        return false;
+      }
+    }
+    return false;
+  }
 
-  storeDataAndNavigate(Map data) {
-    if (signupKey.currentState!.validate()) {
+  storeDataAndNavigate(Map data) async {
+    bool isUserExists = await checkIfUserExists();
+    if (signupKey.currentState!.validate() && !isUserExists) {
+      SharedPrefHelper prefHelper = SharedPrefHelper();
+      await prefHelper.init();
+
+      await prefHelper.setValue('emailAddress', emailController.text);
       Provider.of<AuthRepository>(context, listen: false)
           .userSignupData
           .addAll(data);

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:irish_locums/app/shared/permissions.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/features/home/domain/jobs_model.dart';
 import 'package:irish_locums/features/home/presentation/widgets/view_shift_modal.dart';
 
 class ApplyShiftDialog extends StatelessWidget {
-  ApplyShiftDialog({super.key, required this.job});
+  ApplyShiftDialog({super.key, required this.job, this.permissions});
   JobModel job;
+  Permissions? permissions;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,10 @@ class ApplyShiftDialog extends StatelessWidget {
                 showModalBottomSheet(
                   isScrollControlled: true,
                   context: context,
-                  builder: ((context) => ViewShiftModal(job: job)),
+                  builder: ((context) => ViewShiftModal(
+                        job: job,
+                        permissions: permissions,
+                      )),
                 );
               },
               child: TextBody(

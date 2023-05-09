@@ -103,104 +103,82 @@ class _InputFieldState extends State<InputField> {
                           });
                         }
                       : null,
-                  child: Container(
-                    //height: widget.height,
-                    // alignment: Alignment.centerLeft,
-                    // padding: const EdgeInsets.symmetric(horizontal: 18),
-                    // decoration: BoxDecoration(
-                    //   color: widget.backgroundColor,
-                    //   border: Border.all(color: widget.validationColor),
-                    //   borderRadius: BorderRadius.circular(5),
-                    // ),
-                    child: Row(
-                      children: <Widget>[
-                        // const Gap(10),
-                        Expanded(
-                          child: TextFormField(
-                            onTap: widget.showLabel
-                                ? () {
-                                    setState(() {
-                                      activiateLabe = true;
-                                    });
-                                    if (widget.enterPressed != null) {
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode());
-                                      // ignore: avoid_dynamic_calls
-                                      widget.enterPressed!();
-                                    }
-                                  }
-                                : null,
-                            obscuringCharacter: '*',
-                            controller: widget.controller,
-                            keyboardType: widget.textInputType,
-                            inputFormatters: widget.formatter ?? [],
-                            focusNode: widget.fieldFocusNode,
-                            textInputAction: widget.textInputAction,
-                            onChanged: widget.onChanged,
-                            onEditingComplete: () {},
-                            obscureText: isPassword,
-                            readOnly: widget.isReadOnly,
-                            validator: widget.validator,
-                            style: const TextStyle(color: AppColors.black),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 8.0),
-                              prefix: widget.prefix ?? const SizedBox(),
-                              suffix: widget.suffix ??
-                                  GestureDetector(
-                                    onTap: () => setState(() {
-                                      isPassword = !isPassword;
-                                    }),
-                                    child: widget.password
-                                        ? Container(
-                                            width: 30,
-                                            height: 30,
-                                            alignment: Alignment.center,
-                                            child: isPassword
-                                                ? SvgPicture.asset(
-                                                    AppAssets.visibility)
-                                                : const Icon(
-                                                    Icons.visibility_outlined,
-                                                    color: Color(0xff71759D),
-                                                    size: 18,
-                                                  ),
-                                          )
-                                        : Container(
-                                            width: 30,
-                                            height: 30,
-                                            alignment: Alignment.center,
+                  child: TextFormField(
+                    onTap: widget.showLabel
+                        ? () {
+                            setState(() {
+                              activiateLabe = true;
+                            });
+                            if (widget.enterPressed != null) {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                              // ignore: avoid_dynamic_calls
+                              widget.enterPressed!();
+                            }
+                          }
+                        : null,
+                    obscuringCharacter: '*',
+                    controller: widget.controller,
+                    keyboardType: widget.textInputType,
+                    inputFormatters: widget.formatter ?? [],
+                    focusNode: widget.fieldFocusNode,
+                    textInputAction: widget.textInputAction,
+                    onChanged: widget.onChanged,
+                    maxLines: widget.maxLines,
+                    onEditingComplete: () {},
+                    obscureText: isPassword,
+                    readOnly: widget.isReadOnly,
+                    validator: widget.validator,
+                    style: const TextStyle(color: AppColors.black),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 8.0),
+                      prefix: widget.prefix ?? const SizedBox(),
+                      suffix: widget.suffix ??
+                          GestureDetector(
+                            onTap: () => setState(() {
+                              isPassword = !isPassword;
+                            }),
+                            child: widget.password
+                                ? Container(
+                                    width: 30,
+                                    height: 30,
+                                    alignment: Alignment.center,
+                                    child: isPassword
+                                        ? SvgPicture.asset(AppAssets.visibility)
+                                        : const Icon(
+                                            Icons.visibility_outlined,
+                                            color: Color(0xff71759D),
+                                            size: 18,
                                           ),
-                                  ),
-                              hintText: widget.placeholder,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide:
-                                      BorderSide(color: AppColors.borderColor)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide:
-                                      BorderSide(color: AppColors.borderColor)),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide:
-                                      BorderSide(color: AppColors.borderColor)),
-                              errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: BorderSide(color: AppColors.red)),
-                              labelStyle: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                              ),
-                              hintStyle: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: widget.placeholderColor,
-                                // fontFamily: AppFonts.aeonik,
-                              ),
-                            ),
+                                  )
+                                : const SizedBox.shrink(),
                           ),
-                        ),
-                      ],
+                      hintText: widget.placeholder,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide:
+                              const BorderSide(color: AppColors.borderColor)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide:
+                              const BorderSide(color: AppColors.borderColor)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide:
+                              const BorderSide(color: AppColors.borderColor)),
+                      errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: const BorderSide(color: AppColors.red)),
+                      labelStyle: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: widget.placeholderColor,
+                        // fontFamily: AppFonts.aeonik,
+                      ),
                     ),
                   ),
                 ),

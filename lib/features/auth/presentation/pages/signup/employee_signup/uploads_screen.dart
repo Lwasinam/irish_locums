@@ -12,6 +12,7 @@ import 'package:irish_locums/features/auth/data/authRepository.dart';
 import 'package:irish_locums/features/auth/presentation/widgets/upload_widget.dart';
 import 'package:irish_locums/features/home/home.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 class EmployeeUploads extends StatefulWidget {
   const EmployeeUploads({Key? key}) : super(key: key);
@@ -122,7 +123,9 @@ class _EmployeeUploadsState extends State<EmployeeUploads> {
                         fontSize: 14,
                       ),
                       gapTiny,
-                      const UploadWidget(),
+                      UploadWidget(
+                        fileName: 'photo',
+                      ),
                       gapSmall,
                       gapMedium,
                       TextBody(
@@ -131,7 +134,9 @@ class _EmployeeUploadsState extends State<EmployeeUploads> {
                         fontSize: 14,
                       ),
                       gapTiny,
-                      const UploadWidget(),
+                      UploadWidget(
+                        fileName: 'gardaVetting',
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

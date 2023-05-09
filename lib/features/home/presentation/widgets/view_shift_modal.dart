@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:irish_locums/app/shared/permissions.dart';
 import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
 import 'package:irish_locums/features/home/domain/jobs_model.dart';
+import 'package:irish_locums/features/home/presentation/pages/more/my_application_screen.dart';
 import 'package:readmore/readmore.dart';
 
 class ViewShiftModal extends StatefulWidget {
-  ViewShiftModal({super.key, required this.job});
+  ViewShiftModal({super.key, required this.job, this.permissions});
   JobModel job;
+  Permissions? permissions;
 
   @override
   State<ViewShiftModal> createState() => _ViewShiftModalState();
@@ -287,11 +290,23 @@ class _ViewShiftModalState extends State<ViewShiftModal> {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(
-                        context,
-                        RouteName.shiftListingDirectionPage,
-                      );
+                      if (widget.permissions!.isEmployee) {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(
+                          context,
+                          RouteName.shiftListingDirectionPage,
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyAplicationScreen(
+                              ViewApplicationsForSpecificJob: true,
+                              jobModel: widget.job,
+                            ),
+                          ),
+                        );
+                      }
                     },
                     child: Container(
                       height: 50,
@@ -302,7 +317,9 @@ class _ViewShiftModalState extends State<ViewShiftModal> {
                       ),
                       child: Center(
                         child: TextBody(
-                          'Apply',
+                          widget.permissions!.isEmployee
+                              ? 'Apply'
+                              : 'Applications',
                           color: AppColors.tertiaryTextColor,
                           fontSize: 14,
                         ),

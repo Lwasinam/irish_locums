@@ -4,6 +4,7 @@ class RouteName {
   static const String authStartPage = '/authStartPage';
   static const String shiftListingPage = '/shift_listing_page';
   static const String appNavPage = 'app_nav_page';
+  static const String employerAppNavPage = 'employer_app_nav_page';
   static const String shiftListingDirectionPage = '/shift_listing_direction';
 
   static const String signin = '/signin';
@@ -34,4 +35,5 @@ class RouteName {
   static const String myApplicationScreen = '/my_application_screen';
   static const String viewMyApplicationWidget = '/view_my_appliaction';
   static const String myBookmarkScreen = '/my_bookmark_screen';
+  static const String postAjob = '/post_a_job';
 }

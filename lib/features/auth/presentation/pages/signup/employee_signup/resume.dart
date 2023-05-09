@@ -9,6 +9,7 @@ import 'package:irish_locums/core/navigators/route_name.dart';
 import 'package:irish_locums/features/auth/data/authRepository.dart';
 import 'package:irish_locums/features/auth/presentation/widgets/upload_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 class Resume extends StatefulWidget {
   const Resume({Key? key}) : super(key: key);
@@ -118,7 +119,9 @@ class _ResumeState extends State<Resume> {
                         fontSize: 14,
                       ),
                       gapTiny,
-                      const UploadWidget(),
+                      UploadWidget(
+                        fileName: "resume",
+                      ),
                       gapTiny,
                       RichText(
                         text: const TextSpan(

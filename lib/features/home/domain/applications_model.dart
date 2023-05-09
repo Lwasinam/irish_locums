@@ -13,7 +13,6 @@ class MyApplications {
   String userId;
   String jobId;
   String userNote;
-  String adminNote;
   String status;
   DateTime applicationDate;
   bool isDeleted;
@@ -22,7 +21,6 @@ class MyApplications {
     required this.userId,
     required this.jobId,
     required this.userNote,
-    required this.adminNote,
     required this.status,
     required this.applicationDate,
     required this.isDeleted,
@@ -32,7 +30,6 @@ class MyApplications {
         userId: json["userId"],
         jobId: json["jobId"],
         userNote: json["user_note"],
-        adminNote: json["admin_note"],
         status: json["status"],
         applicationDate: DateTime.parse(json["application_date"]),
         isDeleted: json["isDeleted"],
@@ -42,7 +39,6 @@ class MyApplications {
         "userId": userId,
         "jobId": jobId,
         "user_note": userNote,
-        "admin_note": adminNote,
         "status": status,
         "application_date": applicationDate.toIso8601String(),
         "isDeleted": isDeleted,
