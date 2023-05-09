@@ -150,12 +150,13 @@ class AuthRepository with ChangeNotifier {
     }
   }
 
-  FutureOr<Map?> resetPassword(String userId, String token) async {
+  FutureOr<Map?> resetPassword() async {
     await prefHelper.init();
+    String userId = prefHelper.getValue('userId');
+    String token = prefHelper.getValue('token');
     try {
-      final response = await dio.post(
-        '/users/reset_password/$userId/$token',
-      );
+      final response = await dio.patch('/users/reset_password/$userId/$token',
+          data: {'password': '123456789'});
       log(response.data.toString());
       return response.data;
     } on DioError catch (error) {
