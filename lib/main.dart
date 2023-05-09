@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:irish_locums/app/view/app.dart';
-import 'package:irish_locums/features/auth/data/authRepository.dart';
+import 'package:irish_locums/features/auth/data/auth_repository.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(

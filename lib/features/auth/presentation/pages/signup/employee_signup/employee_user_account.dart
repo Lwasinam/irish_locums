@@ -1,14 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:irish_locums/app/shared/app_bar.dart';
 import 'package:irish_locums/app/shared/busy_button.dart';
 import 'package:irish_locums/app/shared/input_field.dart';
-import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
-import 'package:irish_locums/features/auth/data/authRepository.dart';
+import 'package:irish_locums/features/auth/data/auth_repository.dart';
 import 'package:provider/provider.dart';
 
 class EmployeeUserAccount extends StatefulWidget {
@@ -86,6 +85,7 @@ class _EmployeeUserAccountState extends State<EmployeeUserAccount> {
                               if (value == '') {
                                 return 'input username';
                               }
+                              return null;
                             }),
 
                         gapSmall,
@@ -103,9 +103,10 @@ class _EmployeeUserAccountState extends State<EmployeeUserAccount> {
                           validator: (value) {
                             if (value == null) {
                               return 'input password';
-                            } else if (value!.length < 8) {
+                            } else if (value.length < 8) {
                               return 'password must be 8 characters long';
                             }
+                            return null;
                           },
                         ),
                         gapTiny,
@@ -129,7 +130,9 @@ class _EmployeeUserAccountState extends State<EmployeeUserAccount> {
                           placeholderColor: AppColors.borderColor,
                           password: true,
                           onChanged: (value) {
-                            print(passwordController.text);
+                            if (kDebugMode) {
+                              print(passwordController.text);
+                            }
                           },
                           validator: (value) {
                             if (value == '') {
@@ -137,6 +140,7 @@ class _EmployeeUserAccountState extends State<EmployeeUserAccount> {
                             } else if (value != passwordController.text) {
                               return 'passwords not the same';
                             }
+                            return null;
                           },
                         ),
                         gapLarge,

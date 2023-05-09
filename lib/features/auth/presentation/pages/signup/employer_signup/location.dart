@@ -7,7 +7,7 @@ import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
-import 'package:irish_locums/features/auth/data/authRepository.dart';
+import 'package:irish_locums/features/auth/data/auth_repository.dart';
 import 'package:provider/provider.dart';
 
 class SignupUserLocation extends StatefulWidget {

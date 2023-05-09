@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
-import 'package:irish_locums/features/auth/data/authRepository.dart';
+import 'package:irish_locums/features/auth/data/auth_repository.dart';
 import 'package:irish_locums/features/home/data/jobs_repository.dart';
 import 'package:irish_locums/features/home/domain/jobs_model.dart';
 import 'package:irish_locums/features/home/presentation/widgets/apply_shift_dialog.dart';
@@ -87,17 +87,11 @@ class _ShiftListingWidgetState extends State<ShiftListingWidget> {
         await Provider.of<JobsRepository>(context, listen: false).getJobs();
 
     if (data['status'] == true) {
+      // ignore: use_build_context_synchronously
       jobsList = Provider.of<JobsRepository>(context, listen: false).jobsList;
     } else if (data['status'] == false) {
       errorMessage = 'an error occured';
     }
-    setState(() {
-      getShift = false;
-    });
-  }
-
-  onShiftGet() {
-    AuthRepository().isLoggedIn();
     setState(() {
       getShift = false;
     });

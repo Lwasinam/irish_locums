@@ -8,7 +8,7 @@ import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
-import 'package:irish_locums/features/auth/data/authRepository.dart';
+import 'package:irish_locums/features/auth/data/auth_repository.dart';
 import 'package:irish_locums/features/availability/presentation/widgets/app_bar_container.dart';
 import 'package:irish_locums/features/home/data/jobs_repository.dart';
 import 'package:irish_locums/features/home/domain/jobs_model.dart';

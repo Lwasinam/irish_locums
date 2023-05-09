@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:irish_locums/app/shared/shared_pref_helper.dart';
 import 'package:irish_locums/app/view/app.dart';
 import 'package:irish_locums/bootstrap.dart';
-import 'package:irish_locums/features/auth/data/authRepository.dart';
+import 'package:irish_locums/features/auth/data/auth_repository.dart';
 import 'package:irish_locums/features/home/data/appliactions_repository.dart';
 import 'package:irish_locums/features/home/data/branches_repositiory.dart';
 import 'package:irish_locums/features/home/data/jobs_repository.dart';

@@ -3,11 +3,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:irish_locums/app/shared/busy_button.dart';
+import 'package:irish_locums/app/shared/shared_pref_helper.dart';
 import 'package:irish_locums/core/constants/app_asset.dart';
 import 'package:irish_locums/core/constants/app_color.dart';
 import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/navigators/route_name.dart';
+import 'package:irish_locums/features/auth/data/auth_repository.dart';
+import 'package:irish_locums/features/auth/domain/user_model.dart';
 import 'package:irish_locums/features/availability/presentation/widgets/app_bar_container.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -17,114 +21,196 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  bool isUpdating = false;
+  TextEditingController fullName = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController phoneNumber = TextEditingController();
+  TextEditingController psniNumber = TextEditingController();
+  TextEditingController occupation = TextEditingController();
+  SharedPrefHelper _prefHelper = SharedPrefHelper();
+  final _formKey = GlobalKey<FormState>();
+
+  getProfileInfo() async {
+    await _prefHelper.init();
+    fullName.text = _prefHelper.getValue('fullName') ??
+        _prefHelper.getValue('company_name');
+    email.text = _prefHelper.getValue('email');
+    phoneNumber.text = _prefHelper.getValue('phone_nummber') ?? '';
+    psniNumber.text = _prefHelper.getValue('psniNumber');
+    occupation.text = _prefHelper.getValue('occupation') ?? '';
+    setState(() {});
+  }
+
+  updateProfile(Map user) async {
+    setState(() {
+      isUpdating = true;
+    });
+    if (_formKey.currentState!.validate()) {
+      await Provider.of<AuthRepository>(context, listen: false)
+          .updateUserData(user);
+      _prefHelper.setValue('fullName', fullName.text);
+      _prefHelper.setValue('email', email.text);
+      _prefHelper.setValue('phone_nummber', phoneNumber.text);
+      _prefHelper.setValue('psniNumber', psniNumber.text);
+      _prefHelper.setValue('occupation', occupation.text);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: TextBody(
+            'Profile updated successfully',
+            fontSize: 14,
+            color: AppColors.black,
+          ),
+          backgroundColor: AppColors.primaryColor,
+        ),
+      );
+      // Navigator.pop(context);
+    }
+
+    setState(() {
+      isUpdating = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getProfileInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffoldColor,
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                const AppBarContainer(
-                  title: 'Profile',
-                  subtitle: '',
-                  showBackIcon: true,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 95),
-                  child: Align(
-                    child: Container(
-                      height: 107,
-                      width: 107,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(13.49),
-                          color: AppColors.white,
-                          border: Border.all(
-                            width: 3.6,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  const AppBarContainer(
+                    title: 'Profile',
+                    subtitle: '',
+                    showBackIcon: true,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 95),
+                    child: Align(
+                      child: Container(
+                        height: 107,
+                        width: 107,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(13.49),
                             color: AppColors.white,
-                          )),
-                      child: Image.asset(
-                        AppAssets.manImage,
-                        fit: BoxFit.fill,
+                            border: Border.all(
+                              width: 3.6,
+                              color: AppColors.white,
+                            )),
+                        child: Image.asset(
+                          AppAssets.manImage,
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
+                  )
+                ],
+              ),
+              const Gap(33),
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    RouteName.changePasswordScreen,
+                  );
+                },
+                child: Container(
+                  height: 34,
+                  width: 128,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: AppColors.primaryBlue,
                   ),
-                )
-              ],
-            ),
-            const Gap(33),
-            InkWell(
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  RouteName.changePasswordScreen,
-                );
-              },
-              child: Container(
-                height: 34,
-                width: 128,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: AppColors.primaryBlue,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      AppAssets.editIcon,
-                    ),
-                    const Gap(8),
-                    TextBody(
-                      'Edit profile',
-                      fontSize: 12,
-                      color: AppColors.blue500,
-                    ),
-                  ],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        AppAssets.editIcon,
+                      ),
+                      const Gap(8),
+                      TextBody(
+                        'Edit profile',
+                        fontSize: 12,
+                        color: AppColors.blue500,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const Gap(12),
-            const ProfileItem(
-              item: 'Patrick TJ',
-              label: 'Full Name',
-            ),
-            const ProfileItem(
-              item: 'Patricktj@gmail.com',
-              label: 'Email',
-            ),
-            const ProfileItem(
-              item: '+1-812345678901',
-              label: 'Phone Number',
-            ),
-            const ProfileItem(
-              item: '245681-27893-890',
-              label: 'PSNI Number',
-            ),
-            const ProfileItem(
-              item: '-',
-              label: 'Gender',
-            ),
-            const ProfileItem(
-              item: 'Pharmacist',
-              label: 'Occupation',
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
+              const Gap(12),
+              ProfileItem(
+                item: fullName,
+                label: 'Full Name',
               ),
-              child: BusyButton(
-                title: 'Save changes',
-                onTap: () {},
-                buttonColor: AppColors.primaryColor,
-                textColor: AppColors.tertiaryTextColor,
+              ProfileItem(
+                item: email,
+                label: 'Email',
               ),
-            ),
-            const Gap(20),
-          ],
+              ProfileItem(
+                item: phoneNumber,
+                label: 'Phone Number',
+              ),
+              ProfileItem(
+                item: psniNumber,
+                label: 'PSNI Number',
+              ),
+              ProfileItem(
+                item: TextEditingController(text: '-'),
+                label: 'Gender',
+              ),
+              ProfileItem(
+                item: occupation,
+                label: 'Occupation',
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+              ),
+              isUpdating
+                  ? Center(
+                      child: SizedBox(
+                        height: 48.3,
+                        width: 48.3,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 4,
+                            color: AppColors.primaryColor,
+                            backgroundColor:
+                                AppColors.primaryColor.withOpacity(0.5),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                      ),
+                      child: BusyButton(
+                        title: 'Save changes',
+                        onTap: () {
+                          updateProfile({
+                            'email': email.text,
+                            'fullname': fullName.text,
+                            'phone': phoneNumber.text,
+                            'psniNumber': psniNumber.text,
+                            'occupation': occupation.text
+                          });
+                        },
+                        buttonColor: AppColors.primaryColor,
+                        textColor: AppColors.tertiaryTextColor,
+                      ),
+                    ),
+              const Gap(20),
+            ],
+          ),
         ),
       ),
     );
@@ -138,7 +224,7 @@ class ProfileItem extends StatelessWidget {
     required this.label,
   });
   final String label;
-  final String item;
+  final TextEditingController item;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -166,9 +252,7 @@ class ProfileItem extends StatelessWidget {
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),
-                    controller: TextEditingController(
-                      text: item,
-                    ),
+                    controller: item,
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                     ),

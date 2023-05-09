@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:irish_locums/app/shared/shared_pref_helper.dart';
-import 'package:provider/provider.dart';
+import 'package:irish_locums/features/auth/domain/user_model.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AuthRepository with ChangeNotifier {
@@ -58,18 +59,26 @@ class AuthRepository with ChangeNotifier {
     baseUrl: 'https://irish-locums-api.onrender.com',
   ));
 
-  FutureOr<bool> isLoggedIn() async {
-    try {
-      final response = await dio.get('/users/loggedIn');
-    } on DioError catch (error) {
-      if (error.response != null) {
-      } else {}
+  Future saveData() async {
+    if (kDebugMode) {
+      print(userSignupData);
     }
-    return false;
+    prefHelper.setValue('email', userSignupData['email']);
+    userSignupData['fullname'] == null
+        ? prefHelper.setValue('company_name', userSignupData['company_name'])
+        : prefHelper.setValue('fullname', userSignupData['fullname']);
+    prefHelper.setValue('psniNumber', userSignupData['psniNumber']);
+    userSignupData['occupation'] != null
+        ? prefHelper.setValue('occupation', userSignupData['occupation'])
+        : null;
+    userSignupData['phone'] != null
+        ? prefHelper.setValue('phone_number', userSignupData['phone'])
+        : null;
   }
 
   FutureOr<Map?> login() async {
     await prefHelper.init();
+
     try {
       final response = await dio.post('/users/login', data: userLoginData);
 
@@ -108,6 +117,8 @@ class AuthRepository with ChangeNotifier {
 
   FutureOr<Map?> signup() async {
     await prefHelper.init();
+    saveData();
+
     try {
       final response = await dio.post('/users/add_user', data: userSignupData);
       return response.data;
@@ -144,6 +155,27 @@ class AuthRepository with ChangeNotifier {
     try {
       final response = await dio.post(
         '/users/reset_password/$userId/$token',
+      );
+      log(response.data.toString());
+      return response.data;
+    } on DioError catch (error) {
+      if (error.response != null) {
+        log(error.response!.data.toString());
+        return error.response!.data;
+      } else {
+        log(error.message.toString());
+        return {'msg': error.message};
+      }
+    }
+  }
+
+  FutureOr<Map?> updateUserData(Map user) async {
+    await prefHelper.init();
+    String userId = prefHelper.getValue('userId');
+    try {
+      final response = await dio.patch(
+        '/users/edit_user/$userId/',
+        data: user,
       );
       log(response.data.toString());
       return response.data;

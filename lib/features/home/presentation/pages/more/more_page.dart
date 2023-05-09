@@ -14,7 +14,22 @@ class MorePage extends StatelessWidget {
 
   deleteToken() async {
     await prefHelper.init();
-    await prefHelper.deleteValue('token');
+    prefHelper.deleteValue('token');
+    prefHelper.deleteValue(
+      'fullName',
+    );
+    prefHelper.deleteValue(
+      'email',
+    );
+    prefHelper.deleteValue(
+      'phone_nummber',
+    );
+    prefHelper.deleteValue(
+      'psniNumber',
+    );
+    prefHelper.deleteValue(
+      'occupation',
+    );
   }
 
   @override
