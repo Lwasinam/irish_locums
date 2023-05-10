@@ -9,6 +9,8 @@ import 'package:irish_locums/core/constants/fonts.dart';
 import 'package:irish_locums/core/constants/keys.dart';
 import 'package:irish_locums/core/constants/ui_helpers.dart';
 import 'package:cloudinary/cloudinary.dart';
+import 'package:irish_locums/features/auth/data/auth_repository.dart';
+import 'package:provider/provider.dart';
 
 class UploadWidget extends StatefulWidget {
   UploadWidget({Key? key, required this.fileName}) : super(key: key);
@@ -99,6 +101,9 @@ class _UploadWidgetState extends State<UploadWidget> {
 
                       if (response.isSuccessful) {
                         print('Get your image from with ${response.secureUrl}');
+                        Provider.of<AuthRepository>(context, listen: false)
+                            .userSignupData
+                            .addAll({widget.fileName: response.secureUrl});
                       }
                       setState(() {
                         isFileLoaded = true;

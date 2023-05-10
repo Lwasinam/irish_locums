@@ -55,7 +55,7 @@ class _SignupUserUploadsState extends State<SignupUserUploads> {
                       ),
                       gapSmall,
                       UploadWidget(
-                        fileName: 'companyLogo',
+                        fileName: 'image',
                       ),
                       gapLarge,
                       TextBody(
@@ -65,7 +65,7 @@ class _SignupUserUploadsState extends State<SignupUserUploads> {
                       ),
                       gapSmall,
                       UploadWidget(
-                        fileName: 'companyFile',
+                        fileName: 'profileSummary',
                       ),
                       gapLarge,
                     ],

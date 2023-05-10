@@ -17,11 +17,10 @@ bool setNotificationRange = false;
 
 class _MapListingViewWidgetState extends State<MapListingViewWidget> {
   RangeValues values2 = const RangeValues(1, 20);
+  double currentSliderValue = 20;
 
   @override
   Widget build(BuildContext context) {
-    double currentSliderValue = 20;
-
     return SizedBox(
       height: double.infinity,
       width: double.infinity,
@@ -114,13 +113,13 @@ class _MapListingViewWidgetState extends State<MapListingViewWidget> {
                                 const Gap(10),
                                 Container(
                                   height: 24,
-                                  width: 30,
+                                  width: 50,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
                                       color: AppColors.slate900),
                                   child: Center(
                                     child: TextBody(
-                                      '80',
+                                      '$currentSliderValue km',
                                       color: AppColors.white,
                                       fontSize: 10,
                                     ),
@@ -133,7 +132,11 @@ class _MapListingViewWidgetState extends State<MapListingViewWidget> {
                                   max: 100,
                                   divisions: 5,
                                   value: currentSliderValue,
-                                  onChanged: (value) {},
+                                  onChanged: (value) {
+                                    setState(() {
+                                      currentSliderValue = value;
+                                    });
+                                  },
                                 ),
                                 Row(
                                   mainAxisAlignment:
@@ -158,7 +161,17 @@ class _MapListingViewWidgetState extends State<MapListingViewWidget> {
                         ),
                         const Gap(8),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              setNotificationRange = false;
+                            });
+                            if (setNotificationRange = false) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text('Applied Successfuly'),
+                              ));
+                            }
+                          },
                           child: Container(
                             height: 50,
                             width: double.infinity,

@@ -167,7 +167,6 @@ class _SecondResumeState extends State<SecondResume> {
                             storeDataAndNavigate({
                               'professionalHeadline':
                                   proffessionalHeadlineController.text,
-                              'profileSummary': ''
                             });
                           },
                         ),
