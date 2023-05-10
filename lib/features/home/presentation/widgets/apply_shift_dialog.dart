@@ -52,7 +52,6 @@ class ApplyShiftDialog extends StatelessWidget {
                   context: context,
                   builder: ((context) => ViewShiftModal(
                         job: job,
-                        permissions: permissions,
                       )),
                 );
               },

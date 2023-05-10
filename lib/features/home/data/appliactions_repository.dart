@@ -55,19 +55,19 @@ class ApplicationsRepository with ChangeNotifier {
     }
   }
 
-  FutureOr<bool> applyForJob(
+  FutureOr<Map> applyForJob(
       String jobId, String userId, String userNote) async {
     try {
-      final response = await dio.post('/applications/add_application',
+      final response = await dio.post('/applications/apply',
           data: {"userId": userId, "jobId": jobId, "user_note": userNote});
       log(response.data.toString());
-      return true;
+      return response.data;
     } on DioError catch (error) {
       if (error.response != null) {
         log(error.response!.data.toString());
-        return false;
+        return error.response!.data;
       } else {
-        return false;
+        return {'msg': error.message};
       }
     }
   }

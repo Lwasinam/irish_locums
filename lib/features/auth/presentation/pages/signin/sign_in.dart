@@ -44,6 +44,9 @@ class _SigninState extends State<Signin> {
   }
 
   storeDataAndNavigate(Map data) async {
+    isChecked
+        ? await prefHelper.setValue('role', 'employer')
+        : await prefHelper.setValue('role', 'employee');
     if (signInKey.currentState!.validate()) {
       Provider.of<AuthRepository>(context, listen: false)
           .userLoginData
@@ -183,12 +186,6 @@ class _SigninState extends State<Signin> {
                                 setState(() {
                                   isChecked = value!;
                                 });
-
-                                isChecked
-                                    ? await prefHelper.setValue(
-                                        'role', 'employer')
-                                    : await prefHelper.setValue(
-                                        'role', 'employee');
                               },
                             ),
                             gapTiny,

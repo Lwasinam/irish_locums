@@ -297,7 +297,6 @@ class _JobsScreenState extends State<JobsScreen> {
                                                     )
                                                   : ViewShiftModal(
                                                       job: job,
-                                                      permissions: permissions,
                                                     );
                                             });
                                       },

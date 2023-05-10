@@ -68,58 +68,61 @@ class _MyAplicationScreenState extends State<MyAplicationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffoldColor,
-      body: Stack(children: [
+      body: Column(children: [
         const AppBarContainer(
           title: 'My Applications',
           subtitle: '',
           showBackIcon: true,
         ),
-        isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 4,
-                  color: AppColors.primaryColor,
-                  backgroundColor: AppColors.primaryColor.withOpacity(0.5),
-                ),
-              )
-            : listOfApplications.isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.only(
-                      top: 110,
-                      left: 17,
-                      right: 17,
-                    ),
-                    child: ListView.builder(
-                      itemCount: listOfApplications.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        MyApplications application = listOfApplications[index];
-                        return MyApplicationItem(
-                          title: 'Dun Laoghaire Pharmacy',
-                          status: application.status,
-                          image: AppAssets.folderIcon,
-                          onTapView: () {
-                            setState(() {
-                              setState(() {
-                                showActions = false;
-                              });
-                            });
-                            Navigator.pushNamed(
-                              context,
-                              RouteName.viewMyApplicationWidget,
-                            );
-                          },
-                          onTapDelete: () {},
-                        );
-                      },
-                    ),
-                  )
-                : Center(
-                    child: TextBody(
-                      errorMessage ?? 'No applications found',
-                      color: AppColors.tertiaryTextColor,
-                      fontSize: 14,
-                    ),
+        Expanded(
+          child: isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4,
+                    color: AppColors.primaryColor,
+                    backgroundColor: AppColors.primaryColor.withOpacity(0.5),
                   ),
+                )
+              : listOfApplications.isNotEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                        // top: 110,
+                        left: 17,
+                        right: 17,
+                      ),
+                      child: ListView.builder(
+                        itemCount: listOfApplications.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          MyApplications application =
+                              listOfApplications[index];
+                          return MyApplicationItem(
+                            title: 'Dun Laoghaire Pharmacy',
+                            status: application.status,
+                            image: AppAssets.folderIcon,
+                            onTapView: () {
+                              setState(() {
+                                setState(() {
+                                  showActions = false;
+                                });
+                              });
+                              Navigator.pushNamed(
+                                context,
+                                RouteName.viewMyApplicationWidget,
+                              );
+                            },
+                            onTapDelete: () {},
+                          );
+                        },
+                      ),
+                    )
+                  : Center(
+                      child: TextBody(
+                        errorMessage ?? 'No applications found',
+                        color: AppColors.tertiaryTextColor,
+                        fontSize: 14,
+                      ),
+                    ),
+        ),
       ]),
     );
   }

@@ -33,10 +33,11 @@ class _ProfilePageState extends State<ProfilePage> {
   getProfileInfo() async {
     await _prefHelper.init();
     fullName.text = _prefHelper.getValue('fullName') ??
-        _prefHelper.getValue('company_name');
-    email.text = _prefHelper.getValue('email');
+        _prefHelper.getValue('company_name') ??
+        '';
+    email.text = _prefHelper.getValue('email') ?? '';
     phoneNumber.text = _prefHelper.getValue('phone_nummber') ?? '';
-    psniNumber.text = _prefHelper.getValue('psniNumber');
+    psniNumber.text = _prefHelper.getValue('psniNumber') ?? '';
     occupation.text = _prefHelper.getValue('occupation') ?? '';
     setState(() {});
   }
