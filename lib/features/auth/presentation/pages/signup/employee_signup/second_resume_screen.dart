@@ -27,7 +27,7 @@ class _SecondResumeState extends State<SecondResume> {
           .userSignupData
           .addAll(data);
 
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         context,
         RouteName.signupEmployeeUpload,
       );

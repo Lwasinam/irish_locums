@@ -23,7 +23,7 @@ class JobModel {
     required this.vacancies,
     required this.salary,
     required this.jobType,
-    required this.branchId,
+    // required this.branchId,
     required this.publishedDate,
     required this.expiredDate,
     required this.benefit,
@@ -45,7 +45,7 @@ class JobModel {
   int vacancies;
   int salary;
   String jobType;
-  String branchId;
+  // String branchId;
   DateTime publishedDate;
   DateTime expiredDate;
   List<String> benefit;
@@ -68,7 +68,7 @@ class JobModel {
         vacancies: json["vacancies"],
         salary: json["salary"],
         jobType: json["jobType"],
-        branchId: json["branchId"],
+        // branchId: json["branchId"],
         publishedDate: DateTime.parse(json["publishedDate"]),
         expiredDate: DateTime.parse(json["expiredDate"]),
         benefit: List<String>.from(json["benefit"].map((x) => x)),
@@ -93,7 +93,7 @@ class JobModel {
         "vacancies": vacancies,
         "salary": salary,
         "jobType": jobType,
-        "branchId": branchId,
+        // "branchId": branchId,
         "publishedDate": publishedDate.toIso8601String(),
         "expiredDate":
             "${expiredDate.year.toString().padLeft(4, '0')}-${expiredDate.month.toString().padLeft(2, '0')}-${expiredDate.day.toString().padLeft(2, '0')}",

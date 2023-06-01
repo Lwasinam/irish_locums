@@ -137,6 +137,7 @@ class AuthRepository with ChangeNotifier {
       final response = await dio.post(
         '/users/forget_password',
       );
+      log('here');
       log(response.data.toString());
       return response.data;
     } on DioError catch (error) {

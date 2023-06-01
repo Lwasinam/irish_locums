@@ -509,7 +509,7 @@ class _PostJobState extends State<PostJobScreen> {
                                   salary: int.parse(payTextController.text
                                       .replaceFirst('£', '')),
                                   jobType: selectedJobType!,
-                                  branchId: userId!,
+                                  // branchId: userId!,
                                   publishedDate: DateTime.now(),
                                   expiredDate: DateTime.utc(2028),
                                   benefit:

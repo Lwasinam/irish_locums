@@ -24,6 +24,7 @@ class _SignupCompanyState extends State<SignupCompany> {
   TextEditingController emailController = TextEditingController();
   TextEditingController companyWebsiteController =
       TextEditingController(text: 'https://');
+  bool isChecking = false;
 
   var signupKey = GlobalKey<FormState>();
 
@@ -37,7 +38,7 @@ class _SignupCompanyState extends State<SignupCompany> {
           .userSignupData
           .addAll(data);
 
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         context,
         RouteName.signupUserUpload,
       );
@@ -45,6 +46,9 @@ class _SignupCompanyState extends State<SignupCompany> {
   }
 
   FutureOr<bool> checkIfUserExists() async {
+    setState(() {
+      isChecking = true;
+    });
     Map? response = await Provider.of<AuthRepository>(context, listen: false)
         .checkIfUserExists(emailController.text);
     if (response != null) {
@@ -57,6 +61,9 @@ class _SignupCompanyState extends State<SignupCompany> {
         return false;
       }
     }
+    setState(() {
+      isChecking = false;
+    });
     return false;
   }
 
@@ -143,68 +150,81 @@ class _SignupCompanyState extends State<SignupCompany> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 120),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          BusyButton(
-                            title: 'Next',
-                            buttonColor: AppColors.yellow,
-                            textColor: AppColors.black,
-                            onTap: () {
-                              storeDataAndNavigate({
-                                'company_name': companyNameController.text,
-                                'email': emailController.text,
-                                'company_website': companyWebsiteController.text
-                              });
-                            },
-                          ),
-                          gapMedium,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 22,
-                                height: 5,
-                                decoration: const BoxDecoration(
-                                    color: AppColors.indicatorActiveColor),
-                                child: const Text(''),
+                      child: isChecking
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 4,
+                                color: AppColors.primaryColor,
+                                backgroundColor:
+                                    AppColors.primaryColor.withOpacity(0.5),
                               ),
-                              gapTiny,
-                              Container(
-                                width: 22,
-                                height: 5,
-                                decoration: const BoxDecoration(
-                                    color: AppColors.indicatorActiveColor),
-                                child: const Text(''),
-                              ),
-                              gapTiny,
-                              Container(
-                                width: 22,
-                                height: 5,
-                                decoration: const BoxDecoration(
-                                    color: AppColors.dotColor),
-                                child: const Text(''),
-                              ),
-                              gapTiny,
-                              Container(
-                                width: 22,
-                                height: 5,
-                                decoration: const BoxDecoration(
-                                    color: AppColors.dotColor),
-                                child: const Text(''),
-                              ),
-                              gapTiny,
-                              Container(
-                                width: 22,
-                                height: 5,
-                                decoration: const BoxDecoration(
-                                    color: AppColors.dotColor),
-                                child: const Text(''),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                BusyButton(
+                                  title: 'Next',
+                                  buttonColor: AppColors.yellow,
+                                  textColor: AppColors.black,
+                                  onTap: () {
+                                    storeDataAndNavigate({
+                                      'company_name':
+                                          companyNameController.text,
+                                      'email': emailController.text,
+                                      'company_website':
+                                          companyWebsiteController.text
+                                    });
+                                  },
+                                ),
+                                gapMedium,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 22,
+                                      height: 5,
+                                      decoration: const BoxDecoration(
+                                          color:
+                                              AppColors.indicatorActiveColor),
+                                      child: const Text(''),
+                                    ),
+                                    gapTiny,
+                                    Container(
+                                      width: 22,
+                                      height: 5,
+                                      decoration: const BoxDecoration(
+                                          color:
+                                              AppColors.indicatorActiveColor),
+                                      child: const Text(''),
+                                    ),
+                                    gapTiny,
+                                    Container(
+                                      width: 22,
+                                      height: 5,
+                                      decoration: const BoxDecoration(
+                                          color: AppColors.dotColor),
+                                      child: const Text(''),
+                                    ),
+                                    gapTiny,
+                                    Container(
+                                      width: 22,
+                                      height: 5,
+                                      decoration: const BoxDecoration(
+                                          color: AppColors.dotColor),
+                                      child: const Text(''),
+                                    ),
+                                    gapTiny,
+                                    Container(
+                                      width: 22,
+                                      height: 5,
+                                      decoration: const BoxDecoration(
+                                          color: AppColors.dotColor),
+                                      child: const Text(''),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                     ),
                   ],
                 ),

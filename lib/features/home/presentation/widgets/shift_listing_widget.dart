@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
@@ -109,225 +111,247 @@ class _ShiftListingWidgetState extends State<ShiftListingWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 15,
-      ),
-      child: getShift
-          ? const FetchShiftProgressIndicator()
-          : jobsList.isNotEmpty
-              ? Column(
-                  children: [
-                    const Gap(15),
-                    Container(
-                      height: 48,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: AppColors.white,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(AppAssets.searchIcon),
-                            const Gap(20),
-                            Expanded(
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: 'Search shift',
-                                    hintStyle: TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.grey2,
-                                    )),
-                              ),
-                            ),
-                            const Gap(10),
-                            Row(
-                              children: [
-                                Container(
-                                  width: 1,
-                                  height: 35,
-                                  color: AppColors.grey2,
-                                ),
-                                const Gap(20),
-                                InkWell(
-                                  onTap: () {
-                                    showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10),
-                                        ),
-                                      ),
-                                      context: context,
-                                      builder: (context) =>
-                                          const ShiftFilterModal(),
-                                    );
-                                  },
-                                  child: SvgPicture.asset(
-                                    AppAssets.filterIcon,
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 15,
+        ),
+        child: getShift
+            ? const FetchShiftProgressIndicator()
+            : Column(
+                children: [
+                  const Gap(15),
+                  Container(
+                    height: 48,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.white,
                     ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: jobsList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          JobModel job = jobsList[index];
-                          return Container(
-                            height: 196,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: AppColors.white,
-                              borderRadius: BorderRadius.circular(10),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(AppAssets.searchIcon),
+                          const Gap(20),
+                          Expanded(
+                            child: TextFormField(
+                              onChanged: (value) {
+                                log(value);
+                                if (value != '') {
+                                  jobsList = jobsList
+                                      .where((job) => job.title
+                                          .toLowerCase()
+                                          .contains(value.toLowerCase()))
+                                      .toList();
+                                  setState(() {});
+                                } else {
+                                  getJobsList();
+                                  setState(() {});
+                                }
+                              },
+                              decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Search shift',
+                                  hintStyle: TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.grey2,
+                                  )),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
+                          ),
+                          const Gap(10),
+                          Row(
+                            children: [
+                              Container(
+                                width: 1,
+                                height: 35,
+                                color: AppColors.grey2,
                               ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TextBold(
-                                        job.title,
-                                        color: AppColors.tertiaryTextColor,
-                                        fontSize: 14,
-                                      ),
-                                      Row(
-                                        children: [
-                                          SvgPicture.asset(AppAssets.shareIcon),
-                                          const Gap(22),
-                                          SvgPicture.asset(
-                                              AppAssets.bookmarkIcon),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const Gap(12),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(AppAssets.locationIcon),
-                                      const Gap(10),
-                                      TextBody(
-                                        'Lucan, 10km from you',
-                                        color: AppColors.grey,
-                                        fontSize: 10,
-                                      ),
-                                    ],
-                                  ),
-                                  const Gap(12),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(AppAssets.timeIcon),
-                                      const Gap(10),
-                                      TextBody(
-                                        DateFormat.yMMMMEEEEd()
-                                            .format(job.startDate),
-                                        color: AppColors.grey,
-                                        fontSize: 10,
-                                      ),
-                                      const Gap(8),
-                                      Container(
-                                        height: 3,
-                                        width: 3,
-                                        decoration: const BoxDecoration(
-                                          color: AppColors.grey2,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                      const Gap(8),
-                                      TextBody(
-                                        '9:00 am - 6:30 pm',
-                                        color: AppColors.grey,
-                                        fontSize: 10,
-                                      ),
-                                    ],
-                                  ),
-                                  const Gap(12),
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(AppAssets.home),
-                                      const Gap(10),
-                                      TextBody(
-                                        'MPS',
-                                        color: AppColors.grey,
-                                        fontSize: 10,
-                                      ),
-                                    ],
-                                  ),
-                                  const Gap(12),
-                                  RichText(
-                                    text: TextSpan(
-                                        text: "\$20.31/hr",
-                                        style: const TextStyle(
-                                          color: AppColors.tertiaryTextColor,
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: '/\$${job.salary}(total)',
-                                            style: const TextStyle(
-                                              color: AppColors.grey,
-                                              fontSize: 9,
-                                            ),
-                                          )
-                                        ]),
-                                  ),
-                                  const Gap(16),
-                                  InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return ApplyShiftDialog(
-                                              job: job,
-                                            );
-                                          });
-                                    },
-                                    child: Container(
-                                      height: 40,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primaryColor,
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: Center(
-                                        child: TextBody(
-                                          'Apply',
-                                          color: AppColors.tertiaryTextColor,
-                                        ),
+                              const Gap(20),
+                              InkWell(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10),
                                       ),
                                     ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                                    context: context,
+                                    builder: (context) =>
+                                        const ShiftFilterModal(),
+                                  );
+                                },
+                                child: SvgPicture.asset(
+                                  AppAssets.filterIcon,
+                                ),
+                              )
+                            ],
+                          )
+                        ],
                       ),
                     ),
-                  ],
-                )
-              : Center(
-                  child: Text(
-                    errorMessage ?? 'No Shifts Found',
-                    style: GoogleFonts.lato(color: AppColors.tertiaryTextColor),
                   ),
-                ),
-    );
+                  jobsList.isNotEmpty
+                      ? Expanded(
+                          child: ListView.builder(
+                            itemCount: jobsList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              JobModel job = jobsList[index];
+                              return Container(
+                                height: 196,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TextBold(
+                                            job.title,
+                                            color: AppColors.tertiaryTextColor,
+                                            fontSize: 14,
+                                          ),
+                                          Row(
+                                            children: [
+                                              SvgPicture.asset(
+                                                  AppAssets.shareIcon),
+                                              const Gap(22),
+                                              SvgPicture.asset(
+                                                  AppAssets.bookmarkIcon),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const Gap(12),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                              AppAssets.locationIcon),
+                                          const Gap(10),
+                                          TextBody(
+                                            'Lucan, 10km from you',
+                                            color: AppColors.grey,
+                                            fontSize: 10,
+                                          ),
+                                        ],
+                                      ),
+                                      const Gap(12),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(AppAssets.timeIcon),
+                                          const Gap(10),
+                                          TextBody(
+                                            DateFormat.yMMMMEEEEd()
+                                                .format(job.startDate),
+                                            color: AppColors.grey,
+                                            fontSize: 10,
+                                          ),
+                                          const Gap(8),
+                                          Container(
+                                            height: 3,
+                                            width: 3,
+                                            decoration: const BoxDecoration(
+                                              color: AppColors.grey2,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          const Gap(8),
+                                          TextBody(
+                                            '9:00 am - 6:30 pm',
+                                            color: AppColors.grey,
+                                            fontSize: 10,
+                                          ),
+                                        ],
+                                      ),
+                                      const Gap(12),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(AppAssets.home),
+                                          const Gap(10),
+                                          TextBody(
+                                            'MPS',
+                                            color: AppColors.grey,
+                                            fontSize: 10,
+                                          ),
+                                        ],
+                                      ),
+                                      const Gap(12),
+                                      RichText(
+                                        text: TextSpan(
+                                            text: "\$20.31/hr",
+                                            style: const TextStyle(
+                                              color:
+                                                  AppColors.tertiaryTextColor,
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text: '/\$${job.salary}(total)',
+                                                style: const TextStyle(
+                                                  color: AppColors.grey,
+                                                  fontSize: 9,
+                                                ),
+                                              )
+                                            ]),
+                                      ),
+                                      const Gap(16),
+                                      InkWell(
+                                        onTap: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return ApplyShiftDialog(
+                                                  job: job,
+                                                );
+                                              });
+                                        },
+                                        child: Container(
+                                          height: 40,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          child: Center(
+                                            child: TextBody(
+                                              'Apply',
+                                              color:
+                                                  AppColors.tertiaryTextColor,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      : Expanded(
+                          child: Center(
+                            child: Text(
+                              errorMessage ?? 'No Shifts Found',
+                              style: GoogleFonts.lato(
+                                  color: AppColors.tertiaryTextColor),
+                            ),
+                          ),
+                        ),
+                ],
+              ));
   }
 }
 

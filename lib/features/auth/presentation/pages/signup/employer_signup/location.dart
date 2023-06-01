@@ -33,7 +33,7 @@ class _SignupUserLocationState extends State<SignupUserLocation> {
           .userSignupData
           .addAll(data);
 
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         context,
         RouteName.signupAdditionalInfo,
       );

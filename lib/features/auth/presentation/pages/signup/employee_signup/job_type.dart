@@ -24,7 +24,7 @@ class _EmployeeJobTypeState extends State<EmployeeJobType> {
           .userSignupData
           .addAll(data);
 
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         context,
         RouteName.signupEmployeeResume,
       );

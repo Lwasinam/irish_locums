@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -19,10 +21,13 @@ class BranchesScreen extends StatefulWidget {
 }
 
 class _BranchesScreenState extends State<BranchesScreen> {
-  bool getbrnaches = true;
+  bool getbrnaches = false;
   String? errorMessage;
   List<BranchModel> listOfBranches = [];
   getBranches() async {
+    setState(() {
+      getbrnaches = true;
+    });
     var data = await Provider.of<BranchesRepository>(context, listen: false)
         .getBranches();
 
@@ -81,6 +86,20 @@ class _BranchesScreenState extends State<BranchesScreen> {
                     const Gap(20),
                     Expanded(
                       child: TextFormField(
+                        onChanged: (value) {
+                          log(value);
+                          if (value != '') {
+                            listOfBranches = listOfBranches
+                                .where((branch) => branch.name
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase()))
+                                .toList();
+                            setState(() {});
+                          } else {
+                            getBranches();
+                            setState(() {});
+                          }
+                        },
                         decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Search Branches',

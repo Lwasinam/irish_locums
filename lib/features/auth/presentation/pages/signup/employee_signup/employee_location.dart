@@ -32,7 +32,7 @@ class _EmployeeLocationState extends State<EmployeeLocation> {
           .userSignupData
           .addAll(data);
 
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         context,
         RouteName.signupEmployeeJobType,
       );

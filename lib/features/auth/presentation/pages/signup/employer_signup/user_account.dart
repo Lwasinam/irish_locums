@@ -29,7 +29,7 @@ class _SignupUserAccountState extends State<SignupUserAccount> {
           .userSignupData
           .addAll(data);
 
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         context,
         RouteName.signupUserCompany,
       );

@@ -35,7 +35,7 @@ class _ResumeState extends State<Resume> {
           .userSignupData
           .addAll(data);
 
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         context,
         RouteName.signupEmployeeResumeSecond,
       );
@@ -158,8 +158,9 @@ class _ResumeState extends State<Resume> {
                           buttonColor: AppColors.yellow,
                           textColor: AppColors.black,
                           onTap: () {
-                            storeDataAndNavigate(
-                                {'occupation': selectedCategory, 'resume': ''});
+                            storeDataAndNavigate({
+                              'occupation': selectedCategory,
+                            });
                           },
                         ),
                         gapMedium,

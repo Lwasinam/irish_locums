@@ -80,7 +80,7 @@ class _SignupUserUploadsState extends State<SignupUserUploads> {
                           buttonColor: AppColors.yellow,
                           textColor: AppColors.black,
                           onTap: () {
-                            Navigator.pushReplacementNamed(
+                            Navigator.pushNamed(
                               context,
                               RouteName.signupUserLocation,
                             );

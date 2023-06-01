@@ -7,6 +7,7 @@ import 'package:irish_locums/features/auth/data/auth_repository.dart';
 import 'package:irish_locums/features/home/data/appliactions_repository.dart';
 import 'package:irish_locums/features/home/data/branches_repositiory.dart';
 import 'package:irish_locums/features/home/data/jobs_repository.dart';
+import 'package:irish_locums/features/home/data/profile_repository.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -20,6 +21,7 @@ void main() {
           ChangeNotifierProvider(create: (_) => JobsRepository()),
           ChangeNotifierProvider(create: (_) => BranchesRepository()),
           ChangeNotifierProvider(create: (_) => ApplicationsRepository()),
+          ChangeNotifierProvider(create: (_) => ProfileRepository())
           // Add any additional providers here
         ],
         child: const App(),

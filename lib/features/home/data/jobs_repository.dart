@@ -19,6 +19,9 @@ class JobsRepository with ChangeNotifier {
 
   FutureOr<Map> getJobs() async {
     _listOfJobs.clear();
+    await prefHelper.init();
+    String token = prefHelper.getValue('token');
+    log(token);
     try {
       final response = await dio.get('/jobs/get_jobs');
       log(response.data.toString());

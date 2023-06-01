@@ -27,7 +27,7 @@ class _EmployeeUserAccountState extends State<EmployeeUserAccount> {
           .userSignupData
           .addAll(data);
 
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamed(
         context,
         RouteName.signupEmployeeAccountInformation,
       );

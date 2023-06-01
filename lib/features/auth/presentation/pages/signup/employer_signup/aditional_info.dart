@@ -75,10 +75,10 @@ class _AdditionalInfoState extends State<AdditionalInfo> {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(response['msg']),
           ));
-          // Navigator.pushReplacementNamed(
-          //   context,
-          //   RouteName.appNavPage,
-          // );
+          Navigator.pushReplacementNamed(
+            context,
+            RouteName.signin,
+          );
         }
       } else {
         setState(() {

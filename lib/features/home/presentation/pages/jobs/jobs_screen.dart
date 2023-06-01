@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -138,6 +140,20 @@ class _JobsScreenState extends State<JobsScreen> {
                     const Gap(20),
                     Expanded(
                       child: TextFormField(
+                        onChanged: (value) {
+                          log(value);
+                          if (value != '') {
+                            jobsList = jobsList
+                                .where((job) => job.title
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase()))
+                                .toList();
+                            setState(() {});
+                          } else {
+                            getJobsList();
+                            setState(() {});
+                          }
+                        },
                         decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Search Jobs',

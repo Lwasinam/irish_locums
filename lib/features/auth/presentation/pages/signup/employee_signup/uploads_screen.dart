@@ -69,7 +69,7 @@ class _EmployeeUploadsState extends State<EmployeeUploads> {
           ));
           Navigator.pushReplacementNamed(
             context,
-            RouteName.appNavPage,
+            RouteName.signin,
           );
         }
       } else {
@@ -124,7 +124,7 @@ class _EmployeeUploadsState extends State<EmployeeUploads> {
                       ),
                       gapTiny,
                       UploadWidget(
-                        fileName: 'photo',
+                        fileName: 'image',
                       ),
                       gapSmall,
                       gapMedium,
@@ -202,7 +202,6 @@ class _EmployeeUploadsState extends State<EmployeeUploads> {
                                 onTap: () {
                                   storeDataAndNavigate({
                                     'vettingFile': '',
-                                    'image': '',
                                     'createdAt': DateTime.now().toString(),
                                     'updatedAt': ''
                                   });
